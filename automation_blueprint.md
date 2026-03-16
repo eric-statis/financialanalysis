@@ -406,11 +406,15 @@ Git 协作约束：
 
 截至 2026-03-16，建议优先级如下：
 
-1. 固化 Soul 数据契约和导出分层。
-2. 选三个差异化案例做 Excel 模板打样。
-3. 将 `financial_analyzer.py` 与 Soul 导出层拆开。
-4. 建立回归案例目录和运行校验。
-5. 再推进批处理和知识治理。
+1. 完成多案例回归与 Soul 模板细化（W6 收尾）。
+2. 建立 `pending_updates` 的知识治理最小闭环（W5）。
+3. 再推进批处理与任务编排（W7）。
+
+排序原因：
+
+- `W4` 契约、模板与 `W3/W4` 导出分层已经落地到主线。
+- 当前仓库已具备 3 个案例的 `pending_updates.json` 样本，可支撑 W5 做跨案例汇总与分级。
+- 如果先做 W7，再补 W5，批处理链路还要回头补知识审核边界，返工概率更高。
 
 ## 14. 当前状态看板
 
@@ -428,6 +432,7 @@ Git 协作约束：
 - 已完成恒隆地产、碧桂园、杭海新城控股三案例的 Soul v1.1-alpha 样稿与 PDF/PNG 预览产物
 - 已验证首轮专题模块：`investment_property`、`restricted_assets`、`lgfv_features`、`external_guarantees`
 - 已将 `financial_analyzer.py` 的最终 Excel 导出切换为“先输出稳定契约，再调用独立 Soul exporter”模式，`financial_output.xlsx` 现由 W4 导出层生成
+- `financial-analyzer/SKILL.md` 已定义 `candidate / validated / promoted` 分级口径，`knowledge_manager.py` 已具备 `pending_updates` 校验与汇总能力，可作为 W5 起点
 
 ### 进行中
 
@@ -435,8 +440,8 @@ Git 协作约束：
 
 ### 待启动
 
+- 知识审核与采纳流程（应在 W7 前启动）
 - 批处理与任务编排
-- 知识审核与采纳流程
 
 ## 15. 与其他文档的关系
 

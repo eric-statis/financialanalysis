@@ -62,23 +62,22 @@
 4. 需要交给另一个 agent 独立执行。
 5. 已经形成一个可交付物，可以进入下一个阶段。
 
-## 4. 推荐执行顺序
+## 4. 当前剩余执行顺序
 
-当前建议不要并行太多，按以下顺序推进：
+基于 2026-03-16 当前仓库进展，W4 契约、W4 模板打样、W3/W4 导出分层已经落地；当前剩余主线建议如下：
 
 | 顺序 | 类型 | Workstream | 主目标 | 交付物 |
 |------|------|------------|--------|--------|
 | 0 | 总控线程 | PM | 维护蓝图、排序任务、审查结果 | 状态更新、下一步安排 |
-| 1 | 执行线程 | W4 | 设计 Soul 数据契约 | 契约文档 + 样例 JSON |
-| 2 | 执行线程 | W4 | 双案例 Soul 模板打样 | 2 个样稿 Excel + 差异总结 |
-| 3 | 执行线程 | W3/W4 | 拆分 Financial Analysis 与 Soul 导出层 | 代码改造 + 跑通产物 |
-| 4 | 执行线程 | W6 | 建立回归与质量检查 | 回归脚本/说明 + 验证结果 |
-| 5 | 执行线程 | W7 | 任务编排与批处理 | 编排方案或入口脚本 |
+| 1 | 执行线程 | W6 | 完成多案例回归与质量检查 | 回归脚本/说明 + 3 案例验证结果 |
+| 2 | 执行线程 | W5 | 建立知识治理最小闭环 | 候选项汇总、分级规则、审核入口 |
+| 3 | 执行线程 | W7 | 任务编排与批处理 | 编排方案或入口脚本 |
 
 说明：
 
-- 当前最应该先开的，是顺序 1 的 W4 契约设计线程。
-- W7 不要过早开始，否则容易在未稳定的结构上做无效编排。
+- W4 与 W3/W4 不是取消，而是已完成的上游阶段；只有发现回归问题时才回头重开。
+- W5 现在应排在 W7 之前，因为仓库里已经有 3 个案例的 `pending_updates.json` 样本，也已有 `knowledge_manager.py` 的校验/汇总能力。
+- W7 不要早于 W5，否则批处理会先固化一条还没有知识治理边界的链路。
 
 ## 5. 每次新线程的标准开场动作
 
@@ -149,9 +148,12 @@ git branch -r
 
 ## 6. 推荐线程卡片
 
-以下是建议直接开设的 5 个线程。
+以下线程卡片分为两类：
 
-## 6.1 线程 A：W4 / Soul 数据契约设计
+- 历史已完成参考：用于回溯已经落地的阶段
+- 当前优先线程：用于你现在继续往下推进
+
+## 6.1 线程 A：W4 / Soul 数据契约设计（已完成参考）
 
 ### 目标
 
@@ -194,7 +196,7 @@ git branch -r
 先阅读 AGENTS.md、automation_blueprint.md、soul_excel_spec_v1.md、soul_excel_case_analysis.md、excel_skill_adoption_plan.md。当前聚焦 W4。请设计 Soul 导出数据契约，要求覆盖固定骨架和可选模块，并给出样例 JSON、字段说明和与现有 financial_analyzer 输出的映射方案。不要处理下载、MinerU 或批处理。
 ```
 
-## 6.2 线程 B：W4 / 双案例 Soul 模板打样
+## 6.2 线程 B：W4 / 双案例 Soul 模板打样（已完成参考）
 
 ### 目标
 
@@ -236,7 +238,7 @@ git branch -r
 先阅读 AGENTS.md、automation_blueprint.md、soul_excel_spec_v1.md、excel_skill_adoption_plan.md，以及最新的 Soul 数据契约文档。当前聚焦 W4。请基于恒隆地产和杭海新城控股两个案例，生成 Soul v1.1-alpha 模板打样，重点验证固定骨架和专题模块。不要处理下载、MinerU 或批处理。
 ```
 
-## 6.3 线程 C：W3/W4 / Financial Analysis 与 Soul 导出分层
+## 6.3 线程 C：W3/W4 / Financial Analysis 与 Soul 导出分层（已完成参考）
 
 ### 目标
 
@@ -273,11 +275,11 @@ git branch -r
 先阅读 AGENTS.md、automation_blueprint.md、excel_skill_adoption_plan.md，以及最新的 Soul 数据契约文档。当前聚焦 W3/W4 交界。请将 financial_analyzer 的最终 Excel 导出改为“先输出稳定契约，再调用独立 Soul 导出层”，并至少跑通 1 个案例验证。
 ```
 
-## 6.4 线程 D：W6 / 回归与质量检查
+## 6.4 线程 D：W6 / 回归与质量检查（当前优先）
 
 ### 目标
 
-- 建立最小可用的回归流程，保证案例可重复验证。
+- 将当前已存在的多案例产物收敛为可重复执行的回归检查，而不只是一次性验证。
 
 ### 开始前阅读
 
@@ -294,21 +296,64 @@ git branch -r
 ### 交付物
 
 - 回归检查说明或脚本
-- 至少 2 个案例的验证结果
+- 至少 3 个案例的验证结果
+- 失败案例或已知缺口清单
 
 ### 验收标准
 
 1. 能验证 `run_manifest.json` 路径与状态。
 2. 能验证 `analysis_report.md` 是否生成。
-3. 能验证 Soul Excel 是否生成且核心 Sheet 存在。
+3. 能验证 `soul_export_payload.json` 是否生成。
+4. 能验证 Soul Excel 是否生成且核心 Sheet 存在。
 
 ### 可直接复制的提示词
 
 ```text
-先阅读 AGENTS.md 和 automation_blueprint.md。当前聚焦 W6。请为当前链路建立最小可用的回归检查，至少覆盖 run_manifest、analysis_report 和 Soul Excel 的生成结果，并用两个案例做验证。
+先阅读 AGENTS.md 和 automation_blueprint.md。当前聚焦 W6。请把现有多案例产物收敛为最小可用的回归检查，至少覆盖 run_manifest、analysis_report、soul_export_payload 和 Soul Excel 的生成结果，并用三个案例做验证，输出已知缺口清单。
 ```
 
-## 6.5 线程 E：W7 / 编排与批处理
+## 6.5 线程 E：W5 / 知识进化与治理（当前优先）
+
+### 目标
+
+- 在不污染 Soul 对外交付的前提下，为 `pending_updates.json` 建立最小可用的治理闭环。
+
+### 开始前阅读
+
+- `automation_blueprint.md`
+- `financial-analyzer/SKILL.md`
+- `financial-analyzer/references/output_contract.md`
+- `financial-analyzer/references/open_record_protocol.md`
+- `financial-analyzer/scripts/knowledge_manager.py`
+- 至少 3 个案例的 `pending_updates.json`
+
+### 本线程不做
+
+- 不直接把候选项批量写入 `knowledge_base.json`
+- 不修改 Soul 固定骨架
+- 不提前开始任务编排
+
+### 交付物
+
+- 多案例 `pending_updates` 汇总结果
+- `candidate / validated / promoted` 的实际升级规则
+- 审核入口或审核说明
+- 明确哪些候选只保留内部、哪些可进入后续正式评审
+
+### 验收标准
+
+1. 能校验候选项元数据完整性。
+2. 能识别跨案例重复出现的主题、字段、规则候选。
+3. 能把“候选观察”与“正式采纳”明确隔离。
+4. 不会让 W5 的结果直接污染 Soul 导出契约。
+
+### 可直接复制的提示词
+
+```text
+先阅读 AGENTS.md、automation_blueprint.md、financial-analyzer/SKILL.md、financial-analyzer/references/output_contract.md、financial-analyzer/references/open_record_protocol.md，以及 financial-analyzer/scripts/knowledge_manager.py。当前聚焦 W5。请基于至少三个案例的 pending_updates.json，建立最小可用的知识治理闭环：完成候选项校验、跨案例汇总、candidate/validated/promoted 升级规则和审核入口设计，但不要直接批量写入 knowledge_base.json，也不要修改 Soul 结构。
+```
+
+## 6.6 线程 F：W7 / 编排与批处理（后置）
 
 ### 目标
 
@@ -318,6 +363,7 @@ git branch -r
 
 - `automation_blueprint.md`
 - 最新回归与导出分层实现
+- W5 治理规则与审核边界
 
 ### 本线程不做
 
@@ -336,11 +382,12 @@ git branch -r
 1. 能定义任务清单格式。
 2. 能串起下载、解析、分析、导出。
 3. 能处理失败重试或失败记录。
+4. 能明确 `pending_updates` 在编排中的沉淀位置和人工审核边界。
 
 ### 可直接复制的提示词
 
 ```text
-先阅读 AGENTS.md 和 automation_blueprint.md。当前聚焦 W7。请基于现有稳定链路设计任务编排与批处理入口，要求支持任务清单、失败记录和后续扩展，但不要重新设计 Soul 结构或数据契约。
+先阅读 AGENTS.md 和 automation_blueprint.md，以及最新的 W5 治理规则文档。当前聚焦 W7。请基于现有稳定链路设计任务编排与批处理入口，要求支持任务清单、失败记录、pending_updates 的沉淀位置和人工审核边界，但不要重新设计 Soul 结构或数据契约。
 ```
 
 ## 7. 线程完成后的收尾动作
@@ -362,13 +409,20 @@ git branch -r
 3. 在一个线程里同时重做分析逻辑和 Excel 结构。
 4. 没有更新蓝图，只把决策留在对话里。
 5. 为了开多个 Codex 对话而创建多个长期 Git 分支。
+6. 在 `W5` 治理边界未明确前，就先把 `pending_updates` 编进自动批处理。
 
 ## 9. 建议你现在就怎么开始
 
-如果你要立刻开下一个执行线程，建议从以下这一句开始：
+如果你现在仍在收尾 W6，建议先用下面这句完成 W6：
 
 ```text
-先阅读 AGENTS.md、automation_blueprint.md、soul_excel_spec_v1.md、soul_excel_case_analysis.md、excel_skill_adoption_plan.md。当前聚焦 W4。请设计 Soul 导出数据契约，要求覆盖固定骨架和可选模块，并给出样例 JSON、字段说明和与现有 financial_analyzer 输出的映射方案。不要处理下载、MinerU 或批处理。
+先阅读 AGENTS.md 和 automation_blueprint.md。当前聚焦 W6。请把现有多案例产物收敛为最小可用的回归检查，至少覆盖 run_manifest、analysis_report、soul_export_payload 和 Soul Excel 的生成结果，并用三个案例做验证，输出已知缺口清单。
 ```
 
-这是当前最上游、最能减少后续返工的一步。
+如果 `W6` 已经收尾，下一执行线程建议直接从 `W5` 开始：
+
+```text
+先阅读 AGENTS.md、automation_blueprint.md、financial-analyzer/SKILL.md、financial-analyzer/references/output_contract.md、financial-analyzer/references/open_record_protocol.md，以及 financial-analyzer/scripts/knowledge_manager.py。当前聚焦 W5。请基于至少三个案例的 pending_updates.json，建立最小可用的知识治理闭环：完成候选项校验、跨案例汇总、candidate/validated/promoted 升级规则和审核入口设计，但不要直接批量写入 knowledge_base.json，也不要修改 Soul 结构。
+```
+
+这是当前最能减少 `W7` 返工的一步。
