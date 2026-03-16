@@ -12,8 +12,7 @@ import re
 import sys
 from pathlib import Path
 
-from openpyxl import Workbook
-from openpyxl.styles import Font, PatternFill
+from soul_exporter import export_payload_to_workbook
 
 
 if sys.platform == "win32":
@@ -1817,96 +1816,17 @@ def build_report_markdown(report_context, focus_list, final_data, pending_update
     return "\n".join(lines)
 
 
-def autosize_sheet(sheet):
-    for column in sheet.columns:
-        max_length = 0
-        letter = column[0].column_letter
-        for cell in column:
-            if cell.value is None:
-                continue
-            max_length = max(max_length, len(str(cell.value)))
-        sheet.column_dimensions[letter].width = min(max_length + 2, 50)
-
-
-def build_workbook(report_context, focus_list, final_data, pending_updates, chapter_records, output_path):
-    workbook = Workbook()
-    header_fill = PatternFill("solid", fgColor="1F4E78")
-    header_font = Font(color="FFFFFF", bold=True)
-
-    summary_sheet = workbook.active
-    summary_sheet.title = "summary"
-    summary_rows = [
-        ("company_name", report_context["company_name"]),
-        ("report_period", report_context["report_period"]),
-        ("report_type", report_context["report_type"]),
-        ("audit_opinion", report_context["audit_opinion"]),
-        ("currency", report_context["currency"]),
-        ("chapter_count", len(chapter_records)),
-        ("focus_count", len(focus_list)),
-    ]
-    for row_index, (key, value) in enumerate(summary_rows, start=1):
-        summary_sheet.cell(row=row_index, column=1, value=key)
-        summary_sheet.cell(row=row_index, column=2, value=value)
-
-    focus_sheet = workbook.create_sheet("focus")
-    focus_headers = ["focus_name", "severity", "score", "evidence_chapters", "related_topics", "knowledge_gap"]
-    for col_index, header in enumerate(focus_headers, start=1):
-        cell = focus_sheet.cell(row=1, column=col_index, value=header)
-        cell.fill = header_fill
-        cell.font = header_font
-    for row_index, focus in enumerate(focus_list, start=2):
-        focus_sheet.cell(row=row_index, column=1, value=focus["focus_name"])
-        focus_sheet.cell(row=row_index, column=2, value=focus["focus_attributes"]["severity"])
-        focus_sheet.cell(row=row_index, column=3, value=focus["focus_attributes"]["score"])
-        focus_sheet.cell(row=row_index, column=4, value=", ".join(str(item) for item in focus["evidence_chapters"]))
-        focus_sheet.cell(row=row_index, column=5, value=", ".join(focus["related_topics"]))
-        focus_sheet.cell(row=row_index, column=6, value=focus["knowledge_gap"])
-
-    chapter_sheet = workbook.create_sheet("chapters")
-    chapter_headers = ["chapter_no", "chapter_title", "status", "topics", "summary", "anomaly_count", "numeric_count"]
-    for col_index, header in enumerate(chapter_headers, start=1):
-        cell = chapter_sheet.cell(row=1, column=col_index, value=header)
-        cell.fill = header_fill
-        cell.font = header_font
-    for row_index, record in enumerate(chapter_records, start=2):
-        chapter_sheet.cell(row=row_index, column=1, value=record["chapter_no"])
-        chapter_sheet.cell(row=row_index, column=2, value=record["chapter_title"])
-        chapter_sheet.cell(row=row_index, column=3, value=record["status"])
-        chapter_sheet.cell(row=row_index, column=4, value=", ".join(record["attributes"]["topic_tags"]))
-        chapter_sheet.cell(row=row_index, column=5, value=record["summary"])
-        chapter_sheet.cell(row=row_index, column=6, value=len(record["anomalies"]))
-        chapter_sheet.cell(row=row_index, column=7, value=len(record["numeric_data"]))
-
-    topic_sheet = workbook.create_sheet("topic_results")
-    topic_headers = ["topic", "chapter_count", "chapter_refs", "summary"]
-    for col_index, header in enumerate(topic_headers, start=1):
-        cell = topic_sheet.cell(row=1, column=col_index, value=header)
-        cell.fill = header_fill
-        cell.font = header_font
-    for row_index, (topic, payload) in enumerate(final_data["topic_results"].items(), start=2):
-        topic_sheet.cell(row=row_index, column=1, value=topic)
-        topic_sheet.cell(row=row_index, column=2, value=payload["attributes"]["chapter_count"])
-        topic_sheet.cell(row=row_index, column=3, value=", ".join(str(item) for item in payload["attributes"]["chapter_refs"]))
-        topic_sheet.cell(row=row_index, column=4, value=payload["summary"])
-
-    update_sheet = workbook.create_sheet("pending_updates")
-    update_headers = ["type", "title", "status", "confidence", "applicable_scope", "proposal"]
-    for col_index, header in enumerate(update_headers, start=1):
-        cell = update_sheet.cell(row=1, column=col_index, value=header)
-        cell.fill = header_fill
-        cell.font = header_font
-    for row_index, item in enumerate(pending_updates["items"], start=2):
-        update_sheet.cell(row=row_index, column=1, value=item["type"])
-        update_sheet.cell(row=row_index, column=2, value=item["title"])
-        update_sheet.cell(row=row_index, column=3, value=item["status"])
-        update_sheet.cell(row=row_index, column=4, value=item["confidence"])
-        update_sheet.cell(row=row_index, column=5, value=item["applicable_scope"])
-        update_sheet.cell(row=row_index, column=6, value=item["proposal"])
-
-    for sheet in workbook.worksheets:
-        autosize_sheet(sheet)
-
-    workbook.save(output_path)
+def build_artifact_paths(run_dir):
+    return {
+        "run_manifest": str(run_dir / "run_manifest.json"),
+        "chapter_records": str(run_dir / "chapter_records.jsonl"),
+        "focus_list": str(run_dir / "focus_list.json"),
+        "final_data": str(run_dir / "final_data.json"),
+        "soul_export_payload": str(run_dir / "soul_export_payload.json"),
+        "pending_updates": str(run_dir / "pending_updates.json"),
+        "analysis_report": str(run_dir / "analysis_report.md"),
+        "financial_output": str(run_dir / "financial_output.xlsx"),
+    }
 
 
 def build_manifest(md_path, notes_work, run_dir, report_context, chapter_records, focus_list, pending_updates):
@@ -1938,16 +1858,7 @@ def build_manifest(md_path, notes_work, run_dir, report_context, chapter_records
             "first_note": notes_work["notes_catalog"][0]["note_no"],
             "last_note": notes_work["notes_catalog"][-1]["note_no"],
         },
-        "artifacts": {
-            "run_manifest": str(run_dir / "run_manifest.json"),
-            "chapter_records": str(run_dir / "chapter_records.jsonl"),
-            "focus_list": str(run_dir / "focus_list.json"),
-            "final_data": str(run_dir / "final_data.json"),
-            "soul_export_payload": str(run_dir / "soul_export_payload.json"),
-            "pending_updates": str(run_dir / "pending_updates.json"),
-            "analysis_report": str(run_dir / "analysis_report.md"),
-            "financial_output": str(run_dir / "financial_output.xlsx"),
-        },
+        "artifacts": build_artifact_paths(run_dir),
         "counts": {
             "chapter_records": len(chapter_records),
             "focus_items": len(focus_list),
@@ -1956,8 +1867,16 @@ def build_manifest(md_path, notes_work, run_dir, report_context, chapter_records
     }
 
 
-def build_failure_manifest(md_path, notes_workfile_path, run_dir, report_context, failure_reason, details):
-    return {
+def build_failure_manifest(
+    md_path,
+    notes_workfile_path,
+    run_dir,
+    report_context,
+    failure_reason,
+    details,
+    notes_work=None,
+):
+    manifest = {
         "engine_version": ENGINE_VERSION,
         "status": "failed",
         "failure_reason": failure_reason,
@@ -1974,25 +1893,37 @@ def build_failure_manifest(md_path, notes_workfile_path, run_dir, report_context
             "report_type": report_context["report_type"],
             "audit_opinion": report_context["audit_opinion"],
         },
-        "notes_locator": {
+        "artifacts": build_artifact_paths(run_dir),
+        "details": details,
+    }
+    if notes_work is None:
+        manifest["notes_locator"] = {
             "status": "failed",
             "start_line": None,
             "end_line": None,
             "locator_evidence": [],
-        },
-        "notes_catalog_summary": {
+        }
+        manifest["notes_catalog_summary"] = {
             "note_chapter_count": 0,
             "first_note": "",
             "last_note": "",
-        },
-        "artifacts": {
-            "run_manifest": str(run_dir / "run_manifest.json"),
-        },
-        "details": details,
-    }
+        }
+    else:
+        manifest["notes_locator"] = {
+            "status": "success",
+            "start_line": notes_work["notes_start_line"],
+            "end_line": notes_work["notes_end_line"],
+            "locator_evidence": notes_work["locator_evidence"],
+        }
+        manifest["notes_catalog_summary"] = {
+            "note_chapter_count": len(notes_work["notes_catalog"]),
+            "first_note": notes_work["notes_catalog"][0]["note_no"],
+            "last_note": notes_work["notes_catalog"][-1]["note_no"],
+        }
+    return manifest
 
 
-def fail_with_manifest(md_path, notes_workfile_path, run_dir, report_context, failure_reason, details):
+def fail_with_manifest(md_path, notes_workfile_path, run_dir, report_context, failure_reason, details, notes_work=None):
     manifest = build_failure_manifest(
         md_path,
         notes_workfile_path,
@@ -2000,6 +1931,7 @@ def fail_with_manifest(md_path, notes_workfile_path, run_dir, report_context, fa
         report_context,
         failure_reason,
         details,
+        notes_work=notes_work,
     )
     write_json(run_dir / "run_manifest.json", manifest)
     raise SystemExit(1)
@@ -2073,17 +2005,6 @@ def main():
         chapter_records,
     )
 
-    manifest = build_manifest(
-        md_path,
-        notes_work,
-        run_dir,
-        report_context,
-        chapter_records,
-        focus_list,
-        pending_updates,
-    )
-
-    write_json(run_dir / "run_manifest.json", manifest)
     write_jsonl(run_dir / "chapter_records.jsonl", chapter_records)
     write_json(run_dir / "focus_list.json", focus_list)
     write_json(run_dir / "final_data.json", final_data)
@@ -2093,14 +2014,29 @@ def main():
     with open(run_dir / "analysis_report.md", "w", encoding="utf-8") as handle:
         handle.write(analysis_report)
 
-    build_workbook(
+    try:
+        export_payload_to_workbook(run_dir / "soul_export_payload.json", stable_excel_path)
+    except Exception as exc:
+        fail_with_manifest(
+            md_path,
+            args.notes_workfile,
+            run_dir,
+            report_context,
+            "soul_export_failed",
+            str(exc),
+            notes_work=notes_work,
+        )
+
+    manifest = build_manifest(
+        md_path,
+        notes_work,
+        run_dir,
         report_context,
-        focus_list,
-        final_data,
-        pending_updates,
         chapter_records,
-        stable_excel_path,
+        focus_list,
+        pending_updates,
     )
+    write_json(run_dir / "run_manifest.json", manifest)
 
     print(f"[OK] 章节记录: {len(chapter_records)}")
     print(f"[OK] 动态重点: {len(focus_list)}")

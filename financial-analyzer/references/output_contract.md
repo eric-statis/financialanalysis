@@ -18,6 +18,7 @@
 - JSON 导出优先写稳定核心字段，再附加扩展字段。
 - `soul_export_payload.json` 是 W3 -> W4 的正式导出契约；`final_data.json` 保留为分析聚合产物，不再直接作为 Soul 输入。
 - Markdown 报告先给动态重点，再给章节速览与待固化更新。
+- `financial_output.xlsx` 由独立 Soul exporter 基于 `soul_export_payload.json` 生成；W3 不再直接拼装最终 Excel 结构。
 - Excel 只消费稳定核心字段和已识别扩展字段。
 - 遇到未知扩展字段时，允许忽略或降级展示，不能整体失败。
 - 所有正常产物都只基于附注章节生成。
@@ -30,8 +31,9 @@
 
 ## 失败契约
 
-如果缺少 `notes_workfile`、附注目录为空或边界无效：
+如果缺少 `notes_workfile`、附注目录为空、边界无效，或 Soul 导出层失败：
 
 1. 脚本非零退出。
-2. 仅生成失败态 `run_manifest.json`。
-3. `run_manifest.json` 中必须带 `failure_reason`。
+2. `run_manifest.json` 中必须带 `failure_reason`。
+3. 对于前置输入失败，可只生成失败态 `run_manifest.json`。
+4. 对于 `soul_export_failed`，允许保留已写出的 JSON/Markdown 产物用于排障，但不得写成功态 `run_manifest.json`。

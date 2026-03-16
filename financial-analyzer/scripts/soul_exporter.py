@@ -593,16 +593,21 @@ def render_workbook(payload, output_path):
     render_preview(output_path)
 
 
+def export_payload_to_workbook(payload_path, output_path):
+    payload_path = Path(payload_path).resolve()
+    output_path = Path(output_path).resolve()
+    payload = load_json(payload_path)
+    render_workbook(payload, output_path)
+    return output_path
+
+
 def main():
     parser = argparse.ArgumentParser(description="将 soul_export_payload.json 导出为 Soul v1.1-alpha Excel")
     parser.add_argument("--payload", required=True, help="输入 Soul payload JSON")
     parser.add_argument("--output", required=True, help="输出 Excel 路径")
     args = parser.parse_args()
 
-    payload_path = Path(args.payload).resolve()
-    output_path = Path(args.output).resolve()
-    payload = load_json(payload_path)
-    render_workbook(payload, output_path)
+    output_path = export_payload_to_workbook(args.payload, args.output)
     print(f"[OK] Soul workbook generated: {output_path}")
 
 

@@ -427,14 +427,14 @@ Git 协作约束：
 - 已新增独立 `soul_exporter.py`，可从 `soul_export_payload.json` 生成 Soul v1.1-alpha 工作簿
 - 已完成恒隆地产、碧桂园、杭海新城控股三案例的 Soul v1.1-alpha 样稿与 PDF/PNG 预览产物
 - 已验证首轮专题模块：`investment_property`、`restricted_assets`、`lgfv_features`、`external_guarantees`
+- 已将 `financial_analyzer.py` 的最终 Excel 导出切换为“先输出稳定契约，再调用独立 Soul exporter”模式，`financial_output.xlsx` 现由 W4 导出层生成
 
 ### 进行中
 
-- Financial Analysis -> Soul 导出层正式拆分
+- 多案例回归与 Soul 模板细化
 
 ### 待启动
 
-- 将 `financial_analyzer.py` 的最终 Excel 导出切换为独立 Soul exporter
 - 批处理与任务编排
 - 知识审核与采纳流程
 
