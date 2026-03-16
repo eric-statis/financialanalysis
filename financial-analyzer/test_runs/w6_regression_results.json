@@ -1,0 +1,465 @@
+{
+  "generated_at": "2026-03-16T21:50:19+08:00",
+  "script": "/Users/yetim/project/financialanalysis/financial-analyzer/scripts/run_w6_regression.py",
+  "selected_cases": [
+    "henglong",
+    "country_garden",
+    "hanghai"
+  ],
+  "summary": {
+    "selected_case_count": 3,
+    "passed_case_count": 3,
+    "failed_case_count": 0,
+    "all_passed": true
+  },
+  "results": [
+    {
+      "case_id": "henglong",
+      "label": "恒隆地产",
+      "md_path": "/Users/yetim/project/financialanalysis/output/恒隆地产/恒隆地产2024年報/恒隆地产2024年報.md",
+      "notes_workfile": "/Users/yetim/project/financialanalysis/financial-analyzer/testdata/henglong_notes_workfile.json",
+      "run_dir": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_henglong",
+      "started_at": "2026-03-16T21:50:04+08:00",
+      "finished_at": "2026-03-16T21:50:09+08:00",
+      "returncode": 0,
+      "passed": true,
+      "command": [
+        "/opt/homebrew/opt/python@3.13/bin/python3.13",
+        "/Users/yetim/project/financialanalysis/financial-analyzer/scripts/financial_analyzer.py",
+        "--md",
+        "/Users/yetim/project/financialanalysis/output/恒隆地产/恒隆地产2024年報/恒隆地产2024年報.md",
+        "--notes-workfile",
+        "/Users/yetim/project/financialanalysis/financial-analyzer/testdata/henglong_notes_workfile.json",
+        "--run-dir",
+        "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_henglong"
+      ],
+      "stdout_tail": "[INFO] 输入文件: /Users/yetim/project/financialanalysis/output/恒隆地产/恒隆地产2024年報/恒隆地产2024年報.md\n[INFO] 运行目录: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_henglong\n[OK] 章节记录: 4\n[OK] 动态重点: 6\n[OK] 待固化更新: 9\n✅ 成功: 产物已生成 -> /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_henglong",
+      "stderr_tail": "",
+      "checks": [
+        {
+          "name": "run_manifest",
+          "passed": true,
+          "details": {
+            "path": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_henglong/run_manifest.json",
+            "exists": true,
+            "status": "success",
+            "artifacts": {
+              "run_manifest": {
+                "expected": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_henglong/run_manifest.json",
+                "actual": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_henglong/run_manifest.json",
+                "exists": true,
+                "matches_run_dir": true
+              },
+              "analysis_report": {
+                "expected": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_henglong/analysis_report.md",
+                "actual": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_henglong/analysis_report.md",
+                "exists": true,
+                "matches_run_dir": true
+              },
+              "soul_export_payload": {
+                "expected": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_henglong/soul_export_payload.json",
+                "actual": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_henglong/soul_export_payload.json",
+                "exists": true,
+                "matches_run_dir": true
+              },
+              "financial_output": {
+                "expected": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_henglong/financial_output.xlsx",
+                "actual": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_henglong/financial_output.xlsx",
+                "exists": true,
+                "matches_run_dir": true
+              }
+            }
+          },
+          "errors": []
+        },
+        {
+          "name": "analysis_report",
+          "passed": true,
+          "details": {
+            "path": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_henglong/analysis_report.md",
+            "exists": true,
+            "size_bytes": 5427,
+            "contains_run_overview": true,
+            "contains_dynamic_focus": true
+          },
+          "errors": []
+        },
+        {
+          "name": "soul_export_payload",
+          "passed": true,
+          "details": {
+            "path": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_henglong/soul_export_payload.json",
+            "exists": true,
+            "contract_version": "soul_export_v1",
+            "template_version": "soul_v1_1_alpha",
+            "has_required_keys": {
+              "overview": true,
+              "kpi_dashboard": true,
+              "financial_summary": true,
+              "debt_profile": true,
+              "liquidity_and_covenants": true,
+              "evidence_index": true
+            },
+            "module_manifest_count": 8,
+            "evidence_index_count": 16
+          },
+          "errors": []
+        },
+        {
+          "name": "financial_output",
+          "passed": true,
+          "details": {
+            "path": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_henglong/financial_output.xlsx",
+            "exists": true,
+            "sheetnames": [
+              "00_overview",
+              "01_kpi_dashboard",
+              "02_financial_summary",
+              "03_debt_profile",
+              "04_liquidity_and_covenants",
+              "05_bond_detail",
+              "08_topic_investment_property",
+              "99_evidence_index"
+            ],
+            "missing_core_sheets": [],
+            "missing_enabled_optional_sheets": [],
+            "enabled_optional_sheets": [
+              "05_bond_detail",
+              "08_topic_investment_property"
+            ]
+          },
+          "errors": []
+        }
+      ]
+    },
+    {
+      "case_id": "country_garden",
+      "label": "碧桂园",
+      "md_path": "/Users/yetim/project/financialanalysis/cases/碧桂园2024年年报分析.md",
+      "notes_workfile": "/Users/yetim/project/financialanalysis/financial-analyzer/testdata/country_garden_notes_workfile.json",
+      "run_dir": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_country_garden",
+      "started_at": "2026-03-16T21:50:09+08:00",
+      "finished_at": "2026-03-16T21:50:14+08:00",
+      "returncode": 0,
+      "passed": true,
+      "command": [
+        "/opt/homebrew/opt/python@3.13/bin/python3.13",
+        "/Users/yetim/project/financialanalysis/financial-analyzer/scripts/financial_analyzer.py",
+        "--md",
+        "/Users/yetim/project/financialanalysis/cases/碧桂园2024年年报分析.md",
+        "--notes-workfile",
+        "/Users/yetim/project/financialanalysis/financial-analyzer/testdata/country_garden_notes_workfile.json",
+        "--run-dir",
+        "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_country_garden"
+      ],
+      "stdout_tail": "[INFO] 输入文件: /Users/yetim/project/financialanalysis/cases/碧桂园2024年年报分析.md\n[INFO] 运行目录: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_country_garden\n[OK] 章节记录: 31\n[OK] 动态重点: 6\n[OK] 待固化更新: 12\n✅ 成功: 产物已生成 -> /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_country_garden",
+      "stderr_tail": "",
+      "checks": [
+        {
+          "name": "run_manifest",
+          "passed": true,
+          "details": {
+            "path": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_country_garden/run_manifest.json",
+            "exists": true,
+            "status": "success",
+            "artifacts": {
+              "run_manifest": {
+                "expected": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_country_garden/run_manifest.json",
+                "actual": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_country_garden/run_manifest.json",
+                "exists": true,
+                "matches_run_dir": true
+              },
+              "analysis_report": {
+                "expected": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_country_garden/analysis_report.md",
+                "actual": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_country_garden/analysis_report.md",
+                "exists": true,
+                "matches_run_dir": true
+              },
+              "soul_export_payload": {
+                "expected": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_country_garden/soul_export_payload.json",
+                "actual": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_country_garden/soul_export_payload.json",
+                "exists": true,
+                "matches_run_dir": true
+              },
+              "financial_output": {
+                "expected": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_country_garden/financial_output.xlsx",
+                "actual": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_country_garden/financial_output.xlsx",
+                "exists": true,
+                "matches_run_dir": true
+              }
+            }
+          },
+          "errors": []
+        },
+        {
+          "name": "analysis_report",
+          "passed": true,
+          "details": {
+            "path": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_country_garden/analysis_report.md",
+            "exists": true,
+            "size_bytes": 6792,
+            "contains_run_overview": true,
+            "contains_dynamic_focus": true
+          },
+          "errors": []
+        },
+        {
+          "name": "soul_export_payload",
+          "passed": true,
+          "details": {
+            "path": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_country_garden/soul_export_payload.json",
+            "exists": true,
+            "contract_version": "soul_export_v1",
+            "template_version": "soul_v1_1_alpha",
+            "has_required_keys": {
+              "overview": true,
+              "kpi_dashboard": true,
+              "financial_summary": true,
+              "debt_profile": true,
+              "liquidity_and_covenants": true,
+              "evidence_index": true
+            },
+            "module_manifest_count": 8,
+            "evidence_index_count": 13
+          },
+          "errors": []
+        },
+        {
+          "name": "financial_output",
+          "passed": true,
+          "details": {
+            "path": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_country_garden/financial_output.xlsx",
+            "exists": true,
+            "sheetnames": [
+              "00_overview",
+              "01_kpi_dashboard",
+              "02_financial_summary",
+              "03_debt_profile",
+              "04_liquidity_and_covenants",
+              "05_bond_detail",
+              "08_topic_restricted_assets",
+              "99_evidence_index"
+            ],
+            "missing_core_sheets": [],
+            "missing_enabled_optional_sheets": [],
+            "enabled_optional_sheets": [
+              "05_bond_detail",
+              "08_topic_restricted_assets"
+            ]
+          },
+          "errors": []
+        }
+      ]
+    },
+    {
+      "case_id": "hanghai",
+      "label": "杭海新城控股",
+      "md_path": "/Users/yetim/project/financialanalysis/cases/杭海新城控股2024年年报分析.md",
+      "notes_workfile": "/Users/yetim/project/financialanalysis/financial-analyzer/testdata/hanghai_notes_workfile.json",
+      "run_dir": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_hanghai",
+      "started_at": "2026-03-16T21:50:14+08:00",
+      "finished_at": "2026-03-16T21:50:19+08:00",
+      "returncode": 0,
+      "passed": true,
+      "command": [
+        "/opt/homebrew/opt/python@3.13/bin/python3.13",
+        "/Users/yetim/project/financialanalysis/financial-analyzer/scripts/financial_analyzer.py",
+        "--md",
+        "/Users/yetim/project/financialanalysis/cases/杭海新城控股2024年年报分析.md",
+        "--notes-workfile",
+        "/Users/yetim/project/financialanalysis/financial-analyzer/testdata/hanghai_notes_workfile.json",
+        "--run-dir",
+        "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_hanghai"
+      ],
+      "stdout_tail": "[INFO] 输入文件: /Users/yetim/project/financialanalysis/cases/杭海新城控股2024年年报分析.md\n[INFO] 运行目录: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_hanghai\n[OK] 章节记录: 7\n[OK] 动态重点: 6\n[OK] 待固化更新: 12\n✅ 成功: 产物已生成 -> /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_hanghai",
+      "stderr_tail": "",
+      "checks": [
+        {
+          "name": "run_manifest",
+          "passed": true,
+          "details": {
+            "path": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_hanghai/run_manifest.json",
+            "exists": true,
+            "status": "success",
+            "artifacts": {
+              "run_manifest": {
+                "expected": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_hanghai/run_manifest.json",
+                "actual": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_hanghai/run_manifest.json",
+                "exists": true,
+                "matches_run_dir": true
+              },
+              "analysis_report": {
+                "expected": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_hanghai/analysis_report.md",
+                "actual": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_hanghai/analysis_report.md",
+                "exists": true,
+                "matches_run_dir": true
+              },
+              "soul_export_payload": {
+                "expected": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_hanghai/soul_export_payload.json",
+                "actual": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_hanghai/soul_export_payload.json",
+                "exists": true,
+                "matches_run_dir": true
+              },
+              "financial_output": {
+                "expected": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_hanghai/financial_output.xlsx",
+                "actual": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_hanghai/financial_output.xlsx",
+                "exists": true,
+                "matches_run_dir": true
+              }
+            }
+          },
+          "errors": []
+        },
+        {
+          "name": "analysis_report",
+          "passed": true,
+          "details": {
+            "path": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_hanghai/analysis_report.md",
+            "exists": true,
+            "size_bytes": 4594,
+            "contains_run_overview": true,
+            "contains_dynamic_focus": true
+          },
+          "errors": []
+        },
+        {
+          "name": "soul_export_payload",
+          "passed": true,
+          "details": {
+            "path": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_hanghai/soul_export_payload.json",
+            "exists": true,
+            "contract_version": "soul_export_v1",
+            "template_version": "soul_v1_1_alpha",
+            "has_required_keys": {
+              "overview": true,
+              "kpi_dashboard": true,
+              "financial_summary": true,
+              "debt_profile": true,
+              "liquidity_and_covenants": true,
+              "evidence_index": true
+            },
+            "module_manifest_count": 9,
+            "evidence_index_count": 12
+          },
+          "errors": []
+        },
+        {
+          "name": "financial_output",
+          "passed": true,
+          "details": {
+            "path": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_hanghai/financial_output.xlsx",
+            "exists": true,
+            "sheetnames": [
+              "00_overview",
+              "01_kpi_dashboard",
+              "02_financial_summary",
+              "03_debt_profile",
+              "04_liquidity_and_covenants",
+              "05_bond_detail",
+              "08_topic_lgfv_features",
+              "08_topic_external_guarantees",
+              "99_evidence_index"
+            ],
+            "missing_core_sheets": [],
+            "missing_enabled_optional_sheets": [],
+            "enabled_optional_sheets": [
+              "05_bond_detail",
+              "08_topic_lgfv_features",
+              "08_topic_external_guarantees"
+            ]
+          },
+          "errors": []
+        }
+      ]
+    }
+  ],
+  "known_gaps": [
+    {
+      "id": "legacy_windows_artifact_paths",
+      "category": "observed_repo_state",
+      "title": "历史 run_manifest 仍保留 Windows 绝对路径",
+      "detail": "历史 test_runs 样本不能直接作为当前 W6 基线，因为 artifacts 仍指向旧环境路径。",
+      "evidence": [
+        {
+          "case_id": "henglong_notes_only",
+          "path": "C:\\Users\\Administrator\\Desktop\\项目\\信用工作流\\年报训练\\financial-analyzer\\test_runs\\henglong_notes_only\\run_manifest.json"
+        },
+        {
+          "case_id": "henglong_v3",
+          "path": "C:\\Users\\Administrator\\Desktop\\项目\\信用工作流\\年报训练\\financial-analyzer\\test_runs\\henglong_v3\\run_manifest.json"
+        }
+      ]
+    },
+    {
+      "id": "legacy_manifest_missing_status",
+      "category": "observed_repo_state",
+      "title": "henglong_v3 缺少正式 status 字段",
+      "detail": "该目录可作为历史排障样本，但不能继续充当成功态回归基线。",
+      "evidence": [
+        {
+          "case_id": "henglong_v3",
+          "manifest_path": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/henglong_v3/run_manifest.json"
+        }
+      ]
+    },
+    {
+      "id": "mixed_legacy_and_soul_workbooks",
+      "category": "observed_repo_state",
+      "title": "历史目录同时存在旧内部 workbook 与新 Soul workbook",
+      "detail": "W6 v1 只认当前脚本重跑后的 financial_output.xlsx，不直接以历史目录判定通过。",
+      "evidence": [
+        {
+          "path": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/henglong_soul_contract/financial_output.xlsx",
+          "sheetnames": [
+            "summary",
+            "focus",
+            "chapters",
+            "topic_results",
+            "pending_updates"
+          ]
+        },
+        {
+          "path": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/henglong_soul_v1_1_alpha/soul_output.xlsx",
+          "sheetnames": [
+            "00_overview",
+            "01_kpi_dashboard",
+            "02_financial_summary",
+            "03_debt_profile",
+            "04_liquidity_and_covenants",
+            "05_bond_detail",
+            "08_topic_investment_property",
+            "99_evidence_index"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "failure_fixture_not_in_happy_path_baseline",
+      "category": "known_scope_boundary",
+      "title": "失败路径样本已存在，但未纳入本轮 happy-path 基线",
+      "detail": "missing_notes_workfile 可作为 W6.1 的失败态回归输入，本轮最小回归仅覆盖 3 个成功案例。",
+      "evidence": [
+        {
+          "path": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/missing_notes_workfile/run_manifest.json",
+          "failure_reason": "notes_workfile_missing"
+        }
+      ]
+    },
+    {
+      "id": "visual_review_not_covered",
+      "category": "known_scope_boundary",
+      "title": "当前最小回归不覆盖 workbook 视觉预览质量",
+      "detail": "本轮只验证文件生成和结构约束，不判断预览 PDF/PNG、版式和视觉一致性。",
+      "evidence": []
+    },
+    {
+      "id": "golden_diff_not_covered",
+      "category": "known_scope_boundary",
+      "title": "当前最小回归不覆盖 JSON/单元格内容级 golden diff",
+      "detail": "W6 v1 定义为 smoke regression，不冻结 payload 内容或 Excel 单元格值。",
+      "evidence": []
+    }
+  ],
+  "results_path": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_regression_results.json",
+  "report_path": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_regression_report.md"
+}

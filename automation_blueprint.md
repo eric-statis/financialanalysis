@@ -216,16 +216,16 @@
 
 ### 8.2 已确认事实
 
-1. `financial_analyzer.py` 当前生成的 Excel 更偏内部分析产物，不等于最终 Soul 成品。
-2. 现有 4 个案例 Excel 可作为结构归纳样本，但尚未达到统一成品标准。
-3. 当前案例全部缺少公式层、批注溯源、冻结窗格和标准证据索引。
+1. `financial_analyzer.py` 当前已采用“先输出 `soul_export_payload.json`，再调用 `soul_exporter.py` 生成 `financial_output.xlsx`”的导出链路，主线输出已切换为 Soul workbook。
+2. 历史 `test_runs` 目录仍混有旧内部分析 workbook、旧路径口径和分层改造前样本，不能直接等同于当前 W6 回归基线。
+3. 现有历史 Excel 与 3 个固定案例可继续作为结构归纳和回归样本，但需要区分“历史样本”和“当前主线重跑产物”。
 4. curated `spreadsheet` skill 已安装，可作为 Excel 生成层参考。
 
 ### 8.3 当前主要缺口
 
 1. 缺统一任务编排与批处理机制。
-2. 缺稳定的 Soul 导出数据契约。
-3. 缺案例驱动的模板打样机制。
+2. 历史 `test_runs` 目录存在旧产物和旧路径遗留，缺统一的回归基线口径。
+3. 缺更细粒度的 QA：视觉预览检查、内容级 golden diff、失败路径回归尚未纳入最小基线。
 4. 缺知识审核与采纳流程。
 5. 缺跨对话可持续推进的项目状态管理。
 
@@ -406,15 +406,15 @@ Git 协作约束：
 
 截至 2026-03-16，建议优先级如下：
 
-1. 完成多案例回归与 Soul 模板细化（W6 收尾）。
-2. 建立 `pending_updates` 的知识治理最小闭环（W5）。
+1. 建立 `pending_updates` 的知识治理最小闭环（W5）。
+2. 补齐 W6.1：失败路径回归、视觉预览检查和更细粒度导出 QA。
 3. 再推进批处理与任务编排（W7）。
 
 排序原因：
 
-- `W4` 契约、模板与 `W3/W4` 导出分层已经落地到主线。
+- W6 的最小 smoke regression 已可由固定 3 案例重跑验证，主线回归闭环已具备最小可用形态。
 - 当前仓库已具备 3 个案例的 `pending_updates.json` 样本，可支撑 W5 做跨案例汇总与分级。
-- 如果先做 W7，再补 W5，批处理链路还要回头补知识审核边界，返工概率更高。
+- 更细粒度的 QA 和 W7 编排都依赖更稳定的知识边界与异常处理口径，先做 W5 返工概率更低。
 
 ## 14. 当前状态看板
 
@@ -433,15 +433,25 @@ Git 协作约束：
 - 已验证首轮专题模块：`investment_property`、`restricted_assets`、`lgfv_features`、`external_guarantees`
 - 已将 `financial_analyzer.py` 的最终 Excel 导出切换为“先输出稳定契约，再调用独立 Soul exporter”模式，`financial_output.xlsx` 现由 W4 导出层生成
 - `financial-analyzer/SKILL.md` 已定义 `candidate / validated / promoted` 分级口径，`knowledge_manager.py` 已具备 `pending_updates` 校验与汇总能力，可作为 W5 起点
+- 已新增 `financial-analyzer/scripts/run_w6_regression.py`，将 W6 最小回归收敛为固定 3 案例重跑 + 结构校验
+- 已生成 `financial-analyzer/test_runs/w6_henglong`、`w6_country_garden`、`w6_hanghai` 三个专用回归目录
+- 已生成 `financial-analyzer/test_runs/w6_regression_results.json` 与 `financial-analyzer/test_runs/w6_regression_report.md`
+- 已确认 W6 当前基线只认“当前主线重跑产物”，不以历史 `*_soul_contract`、`*_v1_1_alpha`、`henglong_v3` 等目录判定通过
 
 ### 进行中
 
-- 多案例回归与 Soul 模板细化
+- 更细粒度导出 QA：失败路径回归、视觉预览检查、内容级 golden diff
 
 ### 待启动
 
 - 知识审核与采纳流程（应在 W7 前启动）
 - 批处理与任务编排
+
+### 下一步
+
+- 先推进 W5：基于现有 3 个案例的 `pending_updates.json` 建立跨案例汇总、分级和审核入口。
+- 之后补 W6.1：把 `missing_notes_workfile` 纳入失败路径回归，并评估是否增加 workbook 预览和 golden diff。
+- 待 W5/W6.1 边界稳定后，再进入 W7 的批处理与任务编排。
 
 ## 15. 与其他文档的关系
 
