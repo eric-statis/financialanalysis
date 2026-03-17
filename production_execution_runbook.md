@@ -50,12 +50,32 @@
 
 - 明确哪些数据留在项目仓库、哪些数据放在外部 runtime、哪些绝不能放进 `~/.codex/skills`。
 
+当前 P1 默认口径：
+
+- 正式 runtime 根目录放在项目内 `runtime/`
+- `runtime_config + knowledge_base + adoption_logs` 目录骨架进入 Git
+- `registry / batches / governance_review / logs / tmp` 作为运行态状态目录，不进入 Git
+
+### 开始前阅读
+
+- `automation_blueprint.md`
+- `runtime_external_data_layer_spec.md`
+
 ### 交付物
 
 - `runtime` 目录结构方案
 - `runtime_config` 配置契约
 - 读写边界说明
 - 推荐的默认路径策略
+- 项目内 `runtime/` 默认落点说明
+
+### 完成标准
+
+1. 明确 `runtime/knowledge/knowledge_base.json` 为正式知识基线落点。
+2. 明确 `runtime/state/registry/processed_reports/processed_reports.json` 为 registry 正式落点。
+3. 明确 `runtime/state/batches/` 为正式批次产物根目录。
+4. 明确 `runtime/runtime_config.json` 为项目内正式配置入口。
+5. 明确哪些内容允许进入 Git，哪些内容绝不能写进 `~/.codex/skills`。
 
 ### 本线程不做
 
@@ -75,6 +95,13 @@
 
 - 建立跨批次、跨历史的“已处理财报”注册表，解决去重、重跑判定和版本追踪。
 
+### 开始前阅读
+
+- `automation_blueprint.md`
+- `runtime_external_data_layer_spec.md`
+- `financial-analyzer/scripts/run_batch_pipeline.py`
+- `financial-analyzer/scripts/knowledge_manager.py`
+
 ### 交付物
 
 - registry schema
@@ -91,7 +118,7 @@
 ### 可直接复制的 Prompt
 
 ```text
-先阅读 AGENTS.md、automation_blueprint.md、production_execution_runbook.md，以及 financial-analyzer/scripts/run_batch_pipeline.py、financial-analyzer/scripts/knowledge_manager.py。当前聚焦生产化 P2：全局已处理财报 registry。请设计并实现一个跨批次、跨历史的 processed_reports registry，用于记录哪些财报已经处理过、用什么版本处理、是否需要重跑。要求给出 schema、唯一标识/文档指纹策略、去重规则、重跑规则、与 batch_manifest/task_results 的关系，并把设计写入文档；如果实现代码，要求优先保持与现有 batch runner 兼容。不要把 registry 放进 ~/.codex/skills。
+先阅读 AGENTS.md、automation_blueprint.md、production_execution_runbook.md、runtime_external_data_layer_spec.md，以及 financial-analyzer/scripts/run_batch_pipeline.py、financial-analyzer/scripts/knowledge_manager.py。当前聚焦生产化 P2：全局已处理财报 registry。请基于项目内 runtime 方案，设计并实现一个跨批次、跨历史的 processed_reports registry，用于记录哪些财报已经处理过、用什么版本处理、是否需要重跑。要求给出 schema、唯一标识/文档指纹策略、去重规则、重跑规则、与 batch_manifest/task_results 的关系，并把设计写入文档；如果实现代码，要求优先保持与现有 batch runner 兼容，并将正式落点固定在 runtime/state/registry/processed_reports/processed_reports.json。不要把 registry 放进 ~/.codex/skills。
 ```
 
 ## 5.3 线程 P3：Skill 与 Runtime 绑定
@@ -99,6 +126,14 @@
 ### 目标
 
 - 让“安装后的 skill”明确知道去哪里读写外部 runtime，而不是默认写回 skill 目录。
+
+### 开始前阅读
+
+- `automation_blueprint.md`
+- `runtime_external_data_layer_spec.md`
+- `runtime/runtime_config.json`
+- `financial-analyzer/SKILL.md`
+- 与运行入口相关的 scripts
 
 ### 交付物
 
@@ -116,7 +151,7 @@
 ### 可直接复制的 Prompt
 
 ```text
-先阅读 AGENTS.md、automation_blueprint.md、production_execution_runbook.md、financial-analyzer/SKILL.md，以及与运行入口相关的 scripts。当前聚焦生产化 P3：Skill 与 Runtime 绑定。请设计并实现“安装后的 skill 如何稳定找到项目外部 runtime”的机制，要求至少明确 runtime_config 的发现方式、路径覆盖优先级、找不到配置时的失败策略、哪些读写必须走外部 runtime、哪些仍可保留在项目仓库；必要时修改 skill 文档或脚本，但不要让 skill 在运行中自发改写自身文件。
+先阅读 AGENTS.md、automation_blueprint.md、production_execution_runbook.md、runtime_external_data_layer_spec.md、runtime/runtime_config.json、financial-analyzer/SKILL.md，以及与运行入口相关的 scripts。当前聚焦生产化 P3：Skill 与 Runtime 绑定。请设计并实现“安装后的 skill 如何稳定找到项目内 runtime”的机制，要求至少明确 runtime_config 的发现方式、路径覆盖优先级、找不到配置时的失败策略、哪些读写必须走外部 runtime、哪些仍可保留在项目仓库；必要时修改 skill 文档或脚本，但不要让 skill 在运行中自发改写自身文件。
 ```
 
 ## 5.4 线程 P4：自动找 10 份财报的测试入口
@@ -150,6 +185,12 @@
 
 - 用尽量接近真实生产的方式，从干净环境和已安装 skill 出发，完整跑通一次全流程。
 
+### 开始前阅读
+
+- `automation_blueprint.md`
+- `runtime_external_data_layer_spec.md`
+- 已落地的 runtime/registry/skill 绑定方案
+
 ### 交付物
 
 - 冷启动测试方案
@@ -166,7 +207,7 @@
 ### 可直接复制的 Prompt
 
 ```text
-先阅读 AGENTS.md、automation_blueprint.md、codex_execution_runbook.md、production_execution_runbook.md，以及已落地的 runtime/registry/skill 绑定方案。当前聚焦生产化 P5：冷启动全真生产仿真。请按“尽量接近真实生产”的原则，从已安装 skill 和外部 runtime 出发，完成一次完整仿真：检查 skill 安装状态、检查 runtime 配置、使用自动选样得到的 10 份财报任务清单、执行批处理、输出 batch_manifest/failed_tasks/pending_updates_index/governance review，并给出最终成功率、主要失败点和是否达到 go-live 前门槛。不要只做静态审查。
+先阅读 AGENTS.md、automation_blueprint.md、codex_execution_runbook.md、production_execution_runbook.md、runtime_external_data_layer_spec.md，以及已落地的 runtime/registry/skill 绑定方案。当前聚焦生产化 P5：冷启动全真生产仿真。请按“尽量接近真实生产”的原则，从已安装 skill 和项目内 runtime 出发，完成一次完整仿真：检查 skill 安装状态、检查 runtime 配置、使用自动选样得到的 10 份财报任务清单、执行批处理、输出 batch_manifest/failed_tasks/pending_updates_index/governance review，并给出最终成功率、主要失败点和是否达到 go-live 前门槛。不要只做静态审查。
 ```
 
 ## 5.6 线程 P6：Go-Live Checklist

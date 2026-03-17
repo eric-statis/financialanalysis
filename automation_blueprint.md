@@ -462,12 +462,12 @@ Subagents 协作约束：
 - W5 后续项：基于 `financial-analyzer/test_runs/w5_knowledge_governance/` 的审核包做抽样复核，并设计独立的 apply 流程；当前仍不直接批量写入 `knowledge_base.json`
 - 更细粒度导出 QA 的剩余项：workbook 单元格级 golden diff、预览版式语义检查、`soul_export_failed` 等更深失败矩阵
 - W7 后续项：如需进入真正的全链路编排，应先把 ChinaMoney / MinerU 上游入口收敛为与当前 batch runner 一致的稳定 CLI，再考虑并入统一状态机
-- 生产化阶段待启动：runtime 外部数据层、全局 processed_reports registry、skill/runtime 绑定、冷启动全真仿真、go-live checklist
+- 生产化阶段进行中：P1 已完成项目内 runtime 目录、`runtime_config` 契约和 Git 边界设计；P2/P3/P5/P6 仍待推进
 
 ### 下一步
 
-- 先推进生产化 P1：定义 runtime 外部数据层、配置契约和与 skill 的读写边界。
-- 之后推进生产化 P2/P3：补全局 processed_reports registry，并让已安装 skill 稳定绑定外部 runtime。
+- 先推进生产化 P2：基于 `runtime/state/registry/processed_reports/` 补全局 processed_reports registry。
+- 之后推进生产化 P3：让已安装 skill 基于 `runtime/runtime_config.json` 稳定绑定项目内 runtime。
 - 待 runtime/registry 落地后，再推进生产化 P4/P5：自动找 10 份财报并执行冷启动全真生产仿真。
 - 最后整理生产化 P6：go-live checklist、人工复核点和回滚策略。
 
@@ -479,6 +479,7 @@ Subagents 协作约束：
 - `excel_skill_adoption_plan.md` 负责：Excel 生成技术路线与工具选择。
 - `financial-analyzer/references/soul_export_contract.md` 负责：Soul 导出 JSON 契约。
 - `codex_execution_runbook.md` 负责：如何实际开启和组织多个 Codex 执行线程。
+- `runtime_external_data_layer_spec.md` 负责：项目内 production runtime 的目录结构、`runtime_config` 契约、Git 边界与 skill/runtime 读写边界。
 - `production_execution_runbook.md` 负责：生产化阶段如何逐个开启 Codex 对话并执行 runtime/registry/go-live 相关任务。
 
 ## 16. 后续维护要求
