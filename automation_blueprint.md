@@ -427,16 +427,16 @@ Subagents 协作约束：
 
 ## 13. 当前优先级排序
 
-截至 2026-03-18，在 W1-W7 主线和 P1-P5 基础设施已基本落地后，R1 与 R2 已完成文档收口，当前优先级如下：
+截至 2026-03-18，在 W1-W7 主线和 P1-P6 基础设施已基本落地后，R1、R2、R3 与 P6 已完成收口，当前优先级如下：
 
-1. 用 1-2 个完整案例演练 scaffold -> adopt -> formal 的闭环（R3）。
-2. 在闭环稳定后再整理 go-live checklist（P6）。
+1. 维护 [go_live_checklist.md](/Users/yetim/project/financialanalysis/go_live_checklist.md) 与其交叉引用，按实际运行反馈微调门禁。
+2. 后续若出现新的风险模式或运行口径变化，优先回写到 go-live 门禁和 runtime 治理文档，而不是另起一套上线标准。
 
 排序原因：
 
 - scaffold-only 已切换为当前主线；正式知识学习不再依赖 `pending_updates`，而是依赖逐章复核后的 direct adopt。
-- 当前最关键的缺口已经从“控制面是否存在”转为“闭环是否可验证、回滚是否可审计”。
-- 没有先跑通 1-2 个完整案例的 scaffold -> adopt 闭环，就直接上 P6 会缺少最小可验证基线。
+- 当前最关键的缺口已经从“闭环是否可验证、回滚是否可审计”转为“如何持续维护上线门禁与抽检标准”。
+- go-live 门禁已经落地，后续工作重心是按真实运行反馈做小步校正，而不是重新设计上线标准。
 
 ## 14. 当前状态看板
 
@@ -486,18 +486,19 @@ Subagents 协作约束：
 - 生产化 R2 已完成文档收口：知识 adoption delta contract、审计外壳、rollback 约束与校验规则已统一到仓库文档
 - 生产化 R2 已进一步收口为 canonical contract：后续 Codex 线程必须直接消费 `identity / source / review / operations / evidence_refs / hashes / rollback / audit` 口径，不再自造 flat 变体
 - 生产化 R3 已完成双案例演练：`henglong_2024` 与 `country_garden_2024` 已跑通 scaffold -> adopt -> rollback -> formal closed loop，`P6` 现在可以直接接手 go-live checklist
+- `go_live_checklist.md` 已落地，作为正式投入使用前的单一 go-live 门禁清单
 
 ### 进行中
 
-- P6 待推进：go-live checklist、人工抽检点和回滚策略
-- 当前主阻塞已从“闭环是否跑通”转为“上线前检查项、抽检点和停机条件是否足够明确”
+- 当前主阻塞已从“闭环是否跑通”转为“按 go-live checklist 执行上线前抽检与放行”
 - 当前已确认完整链路可按两层运行：`PDF -> MinerU Markdown -> notes_workfile -> batch 抽取层 -> Codex/skill 逐章分析与知识写入`
+- 后续如果要调整上线门禁，只修改 `go_live_checklist.md` 及其交叉引用
 
 ### 下一步
 
 - `R3` 已完成：`henglong_2024` 与 `country_garden_2024` 都已完成 scaffold -> adopt -> rollback -> formal 闭环。
 - 复核与直写线程继续直接消费 `knowledge_adoption_delta_contract.md` 的 canonical 口径，不再沿旧 flat 变体分叉。
-- 接下来只剩 `P6`：go-live checklist、人工抽检点和回滚策略。
+- `P6` 已收口为 `go_live_checklist.md`，后续只按运行反馈维护门禁和交叉引用。
 
 ## 15. 与其他文档的关系
 
@@ -511,6 +512,7 @@ Subagents 协作约束：
 - `production_execution_runbook.md` 负责：生产化阶段如何逐个开启 Codex 对话并执行 runtime/registry/go-live 相关任务。
 - `codex_review_and_finalization_runbook.md` 负责：scaffold-only 之后的复核/直写/收尾 prompt pack。
 - `knowledge_adoption_delta_contract.md` 负责：章节级知识直写的 delta 契约与字段口径。
+- `go_live_checklist.md` 负责：正式投入使用前的上线门禁、人工抽检点、回滚与停机条件。
 
 ## 16. 后续维护要求
 

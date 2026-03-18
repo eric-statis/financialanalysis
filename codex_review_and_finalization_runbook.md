@@ -28,7 +28,7 @@
 
 ## 3. 推荐执行顺序
 
-R1 与 R2 已收口到文档与规范，当前剩余主线是 R3 和 P6。
+R1、R2、R3 与 P6 都已收口到文档与结果，后续只需按运行反馈维护 go-live 门禁与复核口径。
 
 | 顺序 | 类型 | 主目标 | 核心交付物 |
 |------|------|--------|------------|
@@ -173,6 +173,7 @@ R1 与 R2 已收口到文档与规范，当前剩余主线是 R3 和 P6。
 - `automation_blueprint.md`
 - `production_execution_runbook.md`
 - `codex_review_and_finalization_runbook.md`
+- `go_live_checklist.md`
 - 最近一次 R3 演练结果
 
 ### 交付物
@@ -182,10 +183,15 @@ R1 与 R2 已收口到文档与规范，当前剩余主线是 R3 和 P6。
 - 回滚和停机策略
 - 上线判定标准
 
+### 当前口径
+
+- P6 的正式收口文档固定为 [go_live_checklist.md](/Users/yetim/project/financialanalysis/go_live_checklist.md)。
+- 后续对上线门禁的调整，应以该文档为唯一主入口。
+
 ### 可直接复制的 Prompt
 
 ```text
-先阅读 AGENTS.md、automation_blueprint.md、production_execution_runbook.md、codex_review_and_finalization_runbook.md，以及最近一次 R3 演练结果。当前聚焦 P6：Go-Live Checklist。请基于已经跑通的 scaffold -> adopt -> formal 流程，整理一份正式投入使用前的 go-live checklist，至少覆盖 skill 安装校验、runtime 配置校验、registry 状态、复核状态机、adoption log 完整性、失败重跑策略、回滚策略、人工抽检点和“哪些问题出现时必须停止上线”。请把结果落成仓库文档。
+先阅读 AGENTS.md、automation_blueprint.md、production_execution_runbook.md、codex_review_and_finalization_runbook.md、go_live_checklist.md，以及最近一次 R3 演练结果。当前聚焦 P6：Go-Live Checklist。请基于已经跑通的 scaffold -> adopt -> formal 流程，维护正式投入使用前的 go-live checklist，至少覆盖 skill 安装校验、runtime 配置校验、registry 状态、复核状态机、adoption log 完整性、失败重跑策略、回滚策略、人工抽检点和“哪些问题出现时必须停止上线”。请把结果落成仓库文档，并确保与 R3 真实产物一致。
 ```
 
 ## 5. 使用方式
@@ -196,6 +202,6 @@ R1 与 R2 已收口到文档与规范，当前剩余主线是 R3 和 P6。
 
 如果你想验证整个闭环是否真正可用，开 `R3`。
 
-`P6` 只在 `R3` 跑通之后再开。
+`P6` 只在 `R3` 跑通之后再开；当前 `go_live_checklist.md` 已作为正式收口文档落地。
 
 当前状态：`R3` 已在 `henglong_2024` 与 `country_garden_2024` 上完成 scaffold -> adopt -> rollback -> formal 闭环，后续线程可直接进入 `P6` 的 go-live checklist 收口。

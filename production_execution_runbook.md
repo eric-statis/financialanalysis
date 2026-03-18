@@ -27,7 +27,7 @@
 | 4 | 执行线程 | 定义“自动找 10 份财报”的测试入口 | 选样规则、来源记录、任务清单生成方式 |
 | 5 | 执行线程 | 做冷启动全真生产仿真 | 一次完整批次运行与结果汇总 |
 | 6 | 执行线程 | 复核与直写收口 | 章节状态机、delta 契约、adoption log、rollback guard |
-| 7 | 执行线程 | 形成 go-live checklist | 上线门禁、人工复核点、回滚方案 |
+| 7 | 执行线程 | 形成 go-live checklist | 上线门禁、人工复核点、回滚方案、停机条件 |
 
 说明：
 
@@ -333,6 +333,11 @@
 - 回滚与停机策略
 - 上线判定标准
 
+### 当前口径
+
+- P6 的正式收口文档固定为 [go_live_checklist.md](/Users/yetim/project/financialanalysis/go_live_checklist.md)。
+- 后续如果要调整上线门禁，只修改该文档和必要的交叉引用，不再另外发明第二套清单。
+
 ### 本线程不做
 
 - 不继续发散做新功能
@@ -342,7 +347,7 @@
 ### 可直接复制的 Prompt
 
 ```text
-先阅读 AGENTS.md、automation_blueprint.md、production_execution_runbook.md，以及最近一次 P5R 复核与直写收口结果。当前聚焦生产化 P6：Go-Live Checklist。请基于现有系统的真实能力边界，整理一份正式投入使用前的 go-live checklist，至少覆盖 skill 安装校验、runtime 配置校验、registry 状态、批处理成功率门槛、人工抽检点、scaffold 与正式产物的交接边界、知识写入审核边界、失败重跑策略、回滚策略和“哪些问题出现时必须停止上线”。请把结果落成仓库文档。
+先阅读 AGENTS.md、automation_blueprint.md、production_execution_runbook.md、codex_review_and_finalization_runbook.md、go_live_checklist.md，以及最近一次 R3 演练结果。当前聚焦生产化 P6：Go-Live Checklist。请基于现有系统的真实能力边界，维护或补充正式投入使用前的 go-live checklist，至少覆盖 skill 安装校验、runtime 配置校验、registry 状态、复核状态机、adoption log 完整性、失败重跑策略、回滚策略、人工抽检点和“哪些问题出现时必须停止上线”。请把结果落成仓库文档，并确保与最近一次 R3 产物一致。
 ```
 
 ## 6. 你接下来怎么开对话
