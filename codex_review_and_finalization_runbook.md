@@ -197,3 +197,5 @@ R1 与 R2 已收口到文档与规范，当前剩余主线是 R3 和 P6。
 如果你想验证整个闭环是否真正可用，开 `R3`。
 
 `P6` 只在 `R3` 跑通之后再开。
+
+当前状态：`R3` 已在 `henglong_2024` 与 `country_garden_2024` 上完成 scaffold -> adopt -> rollback -> formal 闭环，后续线程可直接进入 `P6` 的 go-live checklist 收口。

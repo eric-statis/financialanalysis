@@ -1,7 +1,7 @@
 {
   "metadata": {
     "name": "财务分析知识库",
-    "version": "2.4.5",
+    "version": "2.4.2",
     "created": "2026-03-11",
     "last_updated": "2026-03-18",
     "source": "财务知识库.md",
@@ -1277,84 +1277,6 @@
             "source_status": "scaffold_reviewed",
             "report_period": "2024",
             "case_issuer": "恒隆地产"
-          },
-          {
-            "chapter_no": "3",
-            "chapter_title": "16 待售物业",
-            "summary": "# 16待售物业 -待售已建物业 -待售发展中物业 -待售已建物业 967 -待售发展中物业 13,489 14,223 截至2024年12月31日止年度，其中一个内地待售已建物业─由待售物业改变用途至租赁物业─转至投资物业，该账面值为港币3.54亿元（2023年：无）（附注10）；截至2023年12月31日止年度，其中一个位于香港的待售发展中物业改变拟定用途时转至发展中投资物业，该账面值为港币3.47亿元（附注10）",
-            "note_scope": "notes_only",
-            "risk_signals": [],
-            "topic_tags": [
-              "investment_property",
-              "待售物业"
-            ],
-            "line_span": {
-              "start": 4478,
-              "end": 4485
-            },
-            "evidence_refs": [
-              "chapter_records.jsonl",
-              "analysis_report_scaffold.md",
-              "soul_export_payload_scaffold.json"
-            ],
-            "source_status": "scaffold_reviewed",
-            "report_period": "2024",
-            "case_issuer": "恒隆地产"
-          },
-          {
-            "chapter_no": "4",
-            "chapter_title": "17 银行贷款及其他借贷",
-            "summary": "# 17银行贷款及其他借贷 于结算日，无抵押银行贷款及其他借贷之还款期如下： 银行贷款（附注17(a)） 一年内或即期 一年后但二年内 二年后但五年内 26,351 22,468 五年以上 42,654 37,235 其他借贷（附注17(b)） 一年内或即期 970 一年后但二年内 二年后但五年内 五年以上 400 14,920 13,663 57,574 50,898 减：未摊销之财务费用 银行贷款及其他借贷总额 57,376 50,704 列入流动负债下一年内到期款项 (9,340) (4,434) 48,036 46,270 (a)所有银行贷款按3.4%至7.0%（2023年：3.7%至6.9%）年利率计息；本集团账面值港币355.38亿元（2023年：港币314.56亿元）之若干借贷受财务契约限制，该等财务契约要求本集团或其子公司于任何时间之综合或其子公司有形资产净值不得低于及借贷占综合有形资产净值之比率不得高于规定水平",
-            "note_scope": "notes_only",
-            "risk_signals": [],
-            "topic_tags": [
-              "debt",
-              "liquidity",
-              "restricted_assets",
-              "risk_management",
-              "银行贷款及其他借贷"
-            ],
-            "line_span": {
-              "start": 4486,
-              "end": 4501
-            },
-            "evidence_refs": [
-              "chapter_records.jsonl",
-              "analysis_report_scaffold.md",
-              "soul_export_payload_scaffold.json"
-            ],
-            "source_status": "scaffold_reviewed",
-            "report_period": "2024",
-            "case_issuer": "恒隆地产"
-          }
-        ]
-      },
-      "country_garden_2024": {
-        "chapters": [
-          {
-            "chapter_no": "1",
-            "chapter_title": "1 货币资金",
-            "summary": "#### (1) 货币资金 | 项目 | 2024 | 2023(经重列) | |------|------|------| | 库存现金 | 204 | 307 | | 银行存款 | 1,361,870 | 2,412,048 | | 其他货币资金(受限) | 17,559,696 | 44,885,441 | | **合计** | **18,921,770** | **47,297,796** | **自由现金** = 1,362,074千元 ≈ **13.6亿元** **受限资金** = 17,559,696千元 ≈ **175.6亿元**（预售物业保证金+冻结资金） **★关键发现**: 受限资金占比高达92.8%；自由可用现金仅13.6亿元，而一年内到期的有息债务超过734亿元，流动性缺口极为严重",
-            "note_scope": "notes_only",
-            "risk_signals": [],
-            "topic_tags": [
-              "cash",
-              "liquidity",
-              "restricted_assets",
-              "货币资金"
-            ],
-            "line_span": {
-              "start": 34,
-              "end": 46
-            },
-            "evidence_refs": [
-              "chapter_records.jsonl",
-              "analysis_report_scaffold.md",
-              "soul_export_payload_scaffold.json"
-            ],
-            "source_status": "scaffold_reviewed",
-            "report_period": "2024",
-            "case_issuer": "碧桂园"
           }
         ]
       }

@@ -1,7 +1,7 @@
 {
   "metadata": {
     "name": "财务分析知识库",
-    "version": "2.4.5",
+    "version": "2.4.32",
     "created": "2026-03-11",
     "last_updated": "2026-03-18",
     "source": "财务知识库.md",
@@ -1346,6 +1346,640 @@
             "line_span": {
               "start": 34,
               "end": 46
+            },
+            "evidence_refs": [
+              "chapter_records.jsonl",
+              "analysis_report_scaffold.md",
+              "soul_export_payload_scaffold.json"
+            ],
+            "source_status": "scaffold_reviewed",
+            "report_period": "2024",
+            "case_issuer": "碧桂园"
+          },
+          {
+            "chapter_no": "2",
+            "chapter_title": "2 交易性金融资产",
+            "summary": "#### (2) 交易性金融资产 理财产品仅64,046千元（0.64亿），非保本浮动收益型",
+            "note_scope": "notes_only",
+            "risk_signals": [],
+            "topic_tags": [
+              "debt",
+              "profitability",
+              "交易性金融资产"
+            ],
+            "line_span": {
+              "start": 47,
+              "end": 49
+            },
+            "evidence_refs": [
+              "chapter_records.jsonl",
+              "analysis_report_scaffold.md",
+              "soul_export_payload_scaffold.json"
+            ],
+            "source_status": "scaffold_reviewed",
+            "report_period": "2024",
+            "case_issuer": "碧桂园"
+          },
+          {
+            "chapter_no": "3",
+            "chapter_title": "3 应收账款",
+            "summary": "#### (3) 应收账款 - 净额: 8,635,923千元 - 坏账准备: 1,067,640千元 - **账龄恶化**: 1-3年应收占比从38%升至47%，3年以上从0.8%升至4.7% - 分组合(关联方+非关联方)坏账率存在差异 **★学习点**: 房企应收账款中关联方和非关联方应分别分析坏账率；关联方的预期信用损失率(ECL)在1年以内就达7.8%，反映合联营项目的回款困难",
+            "note_scope": "notes_only",
+            "risk_signals": [],
+            "topic_tags": [
+              "应收账款"
+            ],
+            "line_span": {
+              "start": 50,
+              "end": 57
+            },
+            "evidence_refs": [
+              "chapter_records.jsonl",
+              "analysis_report_scaffold.md",
+              "soul_export_payload_scaffold.json"
+            ],
+            "source_status": "scaffold_reviewed",
+            "report_period": "2024",
+            "case_issuer": "碧桂园"
+          },
+          {
+            "chapter_no": "4",
+            "chapter_title": "4 其他应收款（★重要）",
+            "summary": "#### (4) 其他应收款（★重要） | 项目 | 2024 | 2023(经重列) | |------|------|------| | 关联方往来款 | 92,633,826 | 100,663,731 | | 第三方代垫款项及往来款 | 160,029,008 | 159,053,503 | | 保证金 | 15,636,255 | 24,275,583 | | 其他 | 4,556,749 | 8,471,547 | | 减：坏账准备 | (39,398,937) | (38,193,900) | | **净额** | **233,456,901** | **254,270,464** | **三阶段减值**: - 第三阶段(已信用减值): 29,103,143千元，损失率**97.6%** → 基本全额计提 - 第二阶段(信用风险显著增加): 80,717,672千元，损失率11.47% - 第一阶段: 163,035,023千元，损失率1.07% **★关键发现**: 其他应收款总额2,729亿元，是碧桂园最大的单一资产项目之一；其中第三阶段(已减值)291亿元反映大量坏账",
+            "note_scope": "notes_only",
+            "risk_signals": [],
+            "topic_tags": [
+              "restricted_assets",
+              "risk_management",
+              "其他应收款"
+            ],
+            "line_span": {
+              "start": 58,
+              "end": 74
+            },
+            "evidence_refs": [
+              "chapter_records.jsonl",
+              "analysis_report_scaffold.md",
+              "soul_export_payload_scaffold.json"
+            ],
+            "source_status": "scaffold_reviewed",
+            "report_period": "2024",
+            "case_issuer": "碧桂园"
+          },
+          {
+            "chapter_no": "5",
+            "chapter_title": "5 预付款项",
+            "summary": "#### (5) 预付款项 - 10,626,335千元 - 3年以上占比从1%升至11%，反映部分预付款长期未结转",
+            "note_scope": "notes_only",
+            "risk_signals": [],
+            "topic_tags": [
+              "预付款项"
+            ],
+            "line_span": {
+              "start": 75,
+              "end": 78
+            },
+            "evidence_refs": [
+              "chapter_records.jsonl",
+              "analysis_report_scaffold.md",
+              "soul_export_payload_scaffold.json"
+            ],
+            "source_status": "scaffold_reviewed",
+            "report_period": "2024",
+            "case_issuer": "碧桂园"
+          },
+          {
+            "chapter_no": "6",
+            "chapter_title": "6 存货（★核心资产）",
+            "summary": "#### (6) 存货（★核心资产） | 项目 | 账面余额 | 跌价准备 | 账面价值 | |------|---------|---------|---------| | 在建开发产品 | 414,067,434 | (65,275,420) | 348,792,014 | | 已完工开发产品 | 98,109,161 | (10,438,789) | 87,670,372 | | 其他 | 909,179 | - | 909,179 | | **合计** | **513,085,774** | **(75,714,209)** | **437,371,565** | **★关键发现**: - 存货跌价准备757亿元，计提比例14.8% - 2023年一次性计提存货跌价损失708亿元；- 抵押情况：938亿元土地使用权作为596亿元借款的抵押物 - 存货缩水：从5,956亿(2023)降至4,374亿(2024)，减少1,582亿 **★进化点**: 房地产企业的存货跌价是行业下行期的核心风险指标",
+            "note_scope": "notes_only",
+            "risk_signals": [],
+            "topic_tags": [
+              "debt",
+              "restricted_assets",
+              "risk_management",
+              "存货"
+            ],
+            "line_span": {
+              "start": 79,
+              "end": 94
+            },
+            "evidence_refs": [
+              "chapter_records.jsonl",
+              "analysis_report_scaffold.md",
+              "soul_export_payload_scaffold.json"
+            ],
+            "source_status": "scaffold_reviewed",
+            "report_period": "2024",
+            "case_issuer": "碧桂园"
+          },
+          {
+            "chapter_no": "7",
+            "chapter_title": "7 其他流动资产",
+            "summary": "#### (7) 其他流动资产 - 36,418,718千元 - 主要为预付税金(282亿)和合同取得成本(24亿) - 预付税金巨大反映大量项目的预缴税款",
+            "note_scope": "notes_only",
+            "risk_signals": [],
+            "topic_tags": [
+              "liquidity",
+              "其他流动资产"
+            ],
+            "line_span": {
+              "start": 95,
+              "end": 99
+            },
+            "evidence_refs": [
+              "chapter_records.jsonl",
+              "analysis_report_scaffold.md",
+              "soul_export_payload_scaffold.json"
+            ],
+            "source_status": "scaffold_reviewed",
+            "report_period": "2024",
+            "case_issuer": "碧桂园"
+          },
+          {
+            "chapter_no": "8",
+            "chapter_title": "8 长期股权投资",
+            "summary": "#### (8) 长期股权投资 - 合营企业: 25,139,947千元 - 联营公司: 16,166,539千元 - **52家合营企业+9家联营公司净资产为负** - 累计未确认投资损失: 合营33.7亿 + 联营7.1亿 = **40.8亿** **★学习点**: 合联营项目净资产为负但未确认损失，意味着表外存在\"隐性损失\"；信用分析时应考虑这些潜在负债",
+            "note_scope": "notes_only",
+            "risk_signals": [],
+            "topic_tags": [
+              "长期股权投资"
+            ],
+            "line_span": {
+              "start": 100,
+              "end": 107
+            },
+            "evidence_refs": [
+              "chapter_records.jsonl",
+              "analysis_report_scaffold.md",
+              "soul_export_payload_scaffold.json"
+            ],
+            "source_status": "scaffold_reviewed",
+            "report_period": "2024",
+            "case_issuer": "碧桂园"
+          },
+          {
+            "chapter_no": "9",
+            "chapter_title": "9 投资性房地产",
+            "summary": "#### (9) 投资性房地产 - 7,254,033千元（公允价值模式） - 公允价值变动损失: 323,357千元 - 抵押: 601,203千元抵押，担保254,729千元负债",
+            "note_scope": "notes_only",
+            "risk_signals": [],
+            "topic_tags": [
+              "investment_property",
+              "restricted_assets",
+              "投资性房地产"
+            ],
+            "line_span": {
+              "start": 108,
+              "end": 112
+            },
+            "evidence_refs": [
+              "chapter_records.jsonl",
+              "analysis_report_scaffold.md",
+              "soul_export_payload_scaffold.json"
+            ],
+            "source_status": "scaffold_reviewed",
+            "report_period": "2024",
+            "case_issuer": "碧桂园"
+          },
+          {
+            "chapter_no": "10",
+            "chapter_title": "10 固定资产",
+            "summary": "#### (10) 固定资产 - 净值约4,979,000千元 - 抵押: 1,858,128千元房屋建筑物作为2,581,440千元借款抵押",
+            "note_scope": "notes_only",
+            "risk_signals": [],
+            "topic_tags": [
+              "debt",
+              "restricted_assets",
+              "固定资产"
+            ],
+            "line_span": {
+              "start": 113,
+              "end": 116
+            },
+            "evidence_refs": [
+              "chapter_records.jsonl",
+              "analysis_report_scaffold.md",
+              "soul_export_payload_scaffold.json"
+            ],
+            "source_status": "scaffold_reviewed",
+            "report_period": "2024",
+            "case_issuer": "碧桂园"
+          },
+          {
+            "chapter_no": "11",
+            "chapter_title": "11 在建工程",
+            "summary": "#### (11) 在建工程 - 622,374千元（房屋建筑物）",
+            "note_scope": "notes_only",
+            "risk_signals": [],
+            "topic_tags": [
+              "在建工程"
+            ],
+            "line_span": {
+              "start": 117,
+              "end": 119
+            },
+            "evidence_refs": [
+              "chapter_records.jsonl",
+              "analysis_report_scaffold.md",
+              "soul_export_payload_scaffold.json"
+            ],
+            "source_status": "scaffold_reviewed",
+            "report_period": "2024",
+            "case_issuer": "碧桂园"
+          },
+          {
+            "chapter_no": "12",
+            "chapter_title": "12 使用权资产",
+            "summary": "#### (12) 使用权资产 - 1,114,973千元",
+            "note_scope": "notes_only",
+            "risk_signals": [],
+            "topic_tags": [
+              "使用权资产"
+            ],
+            "line_span": {
+              "start": 120,
+              "end": 122
+            },
+            "evidence_refs": [
+              "chapter_records.jsonl",
+              "analysis_report_scaffold.md",
+              "soul_export_payload_scaffold.json"
+            ],
+            "source_status": "scaffold_reviewed",
+            "report_period": "2024",
+            "case_issuer": "碧桂园"
+          },
+          {
+            "chapter_no": "13",
+            "chapter_title": "13 无形资产",
+            "summary": "#### (13) 无形资产 - 920,590千元（主要为土地使用权851,565千元） - 无土地使用权作为借款抵押物",
+            "note_scope": "notes_only",
+            "risk_signals": [],
+            "topic_tags": [
+              "debt",
+              "restricted_assets",
+              "无形资产"
+            ],
+            "line_span": {
+              "start": 123,
+              "end": 126
+            },
+            "evidence_refs": [
+              "chapter_records.jsonl",
+              "analysis_report_scaffold.md",
+              "soul_export_payload_scaffold.json"
+            ],
+            "source_status": "scaffold_reviewed",
+            "report_period": "2024",
+            "case_issuer": "碧桂园"
+          },
+          {
+            "chapter_no": "14",
+            "chapter_title": "14 商誉",
+            "summary": "#### (14) 商誉 - 130,840千元，**已全额计提减值**",
+            "note_scope": "notes_only",
+            "risk_signals": [],
+            "topic_tags": [
+              "商誉"
+            ],
+            "line_span": {
+              "start": 127,
+              "end": 129
+            },
+            "evidence_refs": [
+              "chapter_records.jsonl",
+              "analysis_report_scaffold.md",
+              "soul_export_payload_scaffold.json"
+            ],
+            "source_status": "scaffold_reviewed",
+            "report_period": "2024",
+            "case_issuer": "碧桂园"
+          },
+          {
+            "chapter_no": "15",
+            "chapter_title": "15 长期待摊费用",
+            "summary": "#### (15) 长期待摊费用 - 335,617千元",
+            "note_scope": "notes_only",
+            "risk_signals": [],
+            "topic_tags": [
+              "长期待摊费用"
+            ],
+            "line_span": {
+              "start": 130,
+              "end": 132
+            },
+            "evidence_refs": [
+              "chapter_records.jsonl",
+              "analysis_report_scaffold.md",
+              "soul_export_payload_scaffold.json"
+            ],
+            "source_status": "scaffold_reviewed",
+            "report_period": "2024",
+            "case_issuer": "碧桂园"
+          },
+          {
+            "chapter_no": "16",
+            "chapter_title": "16 递延所得税",
+            "summary": "#### (16) 递延所得税 - 递延税资产净额: 8,081,672千元 - 递延税负债净额: 3,341,613千元 - 可抵扣亏损对应递延税资产: 4,139,402千元",
+            "note_scope": "notes_only",
+            "risk_signals": [],
+            "topic_tags": [
+              "tax",
+              "递延所得税"
+            ],
+            "line_span": {
+              "start": 133,
+              "end": 137
+            },
+            "evidence_refs": [
+              "chapter_records.jsonl",
+              "analysis_report_scaffold.md",
+              "soul_export_payload_scaffold.json"
+            ],
+            "source_status": "scaffold_reviewed",
+            "report_period": "2024",
+            "case_issuer": "碧桂园"
+          },
+          {
+            "chapter_no": "17",
+            "chapter_title": "17 其他非流动资产",
+            "summary": "#### (17) 其他非流动资产 - 主要为超营运周期的开发成本 --- ### 负债侧附注 (18)-(29) — ★核心有息债务章节",
+            "note_scope": "notes_only",
+            "risk_signals": [],
+            "topic_tags": [
+              "liquidity",
+              "其他非流动资产"
+            ],
+            "line_span": {
+              "start": 138,
+              "end": 144
+            },
+            "evidence_refs": [
+              "chapter_records.jsonl",
+              "analysis_report_scaffold.md",
+              "soul_export_payload_scaffold.json"
+            ],
+            "source_status": "scaffold_reviewed",
+            "report_period": "2024",
+            "case_issuer": "碧桂园"
+          },
+          {
+            "chapter_no": "18",
+            "chapter_title": "18 短期借款",
+            "summary": "#### (18) 短期借款 | 项目 | 2024 | 2023 | |------|------|------| | 信用借款 | 37,000 | - | | 抵押/质押/保证借款 | 959,609 | 1,552,820 | | **合计** | **996,609** | **1,552,820** | - 加权平均利率: **3.95%** (2023: 4.36%)",
+            "note_scope": "notes_only",
+            "risk_signals": [],
+            "topic_tags": [
+              "debt",
+              "liquidity",
+              "restricted_assets",
+              "risk_management",
+              "短期借款"
+            ],
+            "line_span": {
+              "start": 145,
+              "end": 152
+            },
+            "evidence_refs": [
+              "chapter_records.jsonl",
+              "analysis_report_scaffold.md",
+              "soul_export_payload_scaffold.json"
+            ],
+            "source_status": "scaffold_reviewed",
+            "report_period": "2024",
+            "case_issuer": "碧桂园"
+          },
+          {
+            "chapter_no": "19",
+            "chapter_title": "25 一年内到期的非流动负债（★流动性关键）",
+            "summary": "#### (25) 一年内到期的非流动负债（★流动性关键） | 项目 | 2024 | 2023 | |------|------|------| | 一年内到期的租赁负债 | 84,314 | 128,776 | | 一年内到期的长期借款 | 73,362,789 | 57,526,869 | | **合计** | **73,447,103** | **57,655,645** | - 加权平均利率: **4.19%** (2023: 4.94%) - **年内到期长期借款暴增27.5%**；- 抵押物: 831.8亿元资产抵押（物业、土地使用权、投资物业、房屋建筑物）",
+            "note_scope": "notes_only",
+            "risk_signals": [],
+            "topic_tags": [
+              "debt",
+              "liquidity",
+              "investment_property",
+              "restricted_assets",
+              "risk_management",
+              "一年内到期的非流动负债"
+            ],
+            "line_span": {
+              "start": 153,
+              "end": 162
+            },
+            "evidence_refs": [
+              "chapter_records.jsonl",
+              "analysis_report_scaffold.md",
+              "soul_export_payload_scaffold.json"
+            ],
+            "source_status": "scaffold_reviewed",
+            "report_period": "2024",
+            "case_issuer": "碧桂园"
+          },
+          {
+            "chapter_no": "20",
+            "chapter_title": "26 长期借款",
+            "summary": "#### (26) 长期借款 | 项目 | 2024 | 2023(经重列) | |------|------|------| | 信用借款 | 467,416 | 40,000 | | 抵押/质押/保证借款 | 13,927,100 | 28,051,566 | | **合计** | **14,394,516** | **28,091,566** | - 加权平均利率: **4.48%** (2023: 5.20%) - 长期借款大幅下降 → 大量重分类为一年内到期",
+            "note_scope": "notes_only",
+            "risk_signals": [],
+            "topic_tags": [
+              "debt",
+              "liquidity",
+              "restricted_assets",
+              "risk_management",
+              "长期借款"
+            ],
+            "line_span": {
+              "start": 163,
+              "end": 171
+            },
+            "evidence_refs": [
+              "chapter_records.jsonl",
+              "analysis_report_scaffold.md",
+              "soul_export_payload_scaffold.json"
+            ],
+            "source_status": "scaffold_reviewed",
+            "report_period": "2024",
+            "case_issuer": "碧桂园"
+          },
+          {
+            "chapter_no": "21",
+            "chapter_title": "27 应付债券",
+            "summary": "#### (27) 应付债券 | 项目 | 2024 | 2023 | |------|------|------| | 短期公开人民币债券 | 6,533,356 | 1,262,843 | | 长期公开人民币债券 | 7,317,314 | 12,993,097 | | **合计** | **13,850,670** | **14,255,940** | **债券明细（11笔存续债券）**: - 利率区间: 3.20% ~ 6.30% - 最早到期: 2022年9月发行的3年期MTN（已到期） - 最晚到期: 2020年发行的6年期债券（2026年到期） - 面值合计: 14,505,650千元",
+            "note_scope": "notes_only",
+            "risk_signals": [],
+            "topic_tags": [
+              "debt",
+              "liquidity",
+              "risk_management",
+              "应付债券"
+            ],
+            "line_span": {
+              "start": 172,
+              "end": 184
+            },
+            "evidence_refs": [
+              "chapter_records.jsonl",
+              "analysis_report_scaffold.md",
+              "soul_export_payload_scaffold.json"
+            ],
+            "source_status": "scaffold_reviewed",
+            "report_period": "2024",
+            "case_issuer": "碧桂园"
+          },
+          {
+            "chapter_no": "22",
+            "chapter_title": "28 租赁负债",
+            "summary": "#### (28) 租赁负债 - 长期部分: 1,170,284千元",
+            "note_scope": "notes_only",
+            "risk_signals": [],
+            "topic_tags": [
+              "租赁负债"
+            ],
+            "line_span": {
+              "start": 185,
+              "end": 187
+            },
+            "evidence_refs": [
+              "chapter_records.jsonl",
+              "analysis_report_scaffold.md",
+              "soul_export_payload_scaffold.json"
+            ],
+            "source_status": "scaffold_reviewed",
+            "report_period": "2024",
+            "case_issuer": "碧桂园"
+          },
+          {
+            "chapter_no": "23",
+            "chapter_title": "29 预计负债（★新发现）",
+            "summary": "#### (29) 预计负债（★新发现） | 项目 | 2024 | 2023 | |------|------|------| | 对外提供担保 | 894,181 | 744,834 | | 未决诉讼 | 956,422 | 75,975 | | 计提违约金 | 803,811 | 2,299,119 | | **合计** | **2,654,414** | **3,119,928** | **★关键发现**: 未决诉讼预计负债从0.76亿暴增至9.56亿，反映诉讼风险急剧上升；--- ### 有息债务汇总 | 项目 | 2024年末(千元) | 利率 | |------|--------------|------| | 短期借款 | 996,609 | 3.95% | | 一年内到期的长期借款 | 73,362,789 | 4.19% | | 长期借款 | 14,394,516 | 4.48% | | 应付债券 | 13,850,670 | 3.20%~6.30% | | 租赁负债(含一年内) | 1,254,598 | - | | **有息债务合计** | **103,859,182** | ~4.2% | **即 约1,039亿元** 短期有息债务(一年内) = 996,609 + 73,362,789 + 6,533,356 + 84,314 = **80,977,068千元 ≈ 810亿元** 长期有息债务 = 14,394,516 + 7,317,314 + 1,170,284 = **22,882,114千元 ≈ 229亿元** **短债占比: 78%** — 极其不健康的债务结构",
+            "note_scope": "notes_only",
+            "risk_signals": [],
+            "topic_tags": [
+              "debt",
+              "liquidity",
+              "risk_management",
+              "预计负债"
+            ],
+            "line_span": {
+              "start": 188,
+              "end": 220
+            },
+            "evidence_refs": [
+              "chapter_records.jsonl",
+              "analysis_report_scaffold.md",
+              "soul_export_payload_scaffold.json"
+            ],
+            "source_status": "scaffold_reviewed",
+            "report_period": "2024",
+            "case_issuer": "碧桂园"
+          },
+          {
+            "chapter_no": "24",
+            "chapter_title": "30 实收资本",
+            "summary": "#### (30) 实收资本 - 13,940,840千元（宙华投资100%持股）",
+            "note_scope": "notes_only",
+            "risk_signals": [],
+            "topic_tags": [
+              "实收资本"
+            ],
+            "line_span": {
+              "start": 221,
+              "end": 223
+            },
+            "evidence_refs": [
+              "chapter_records.jsonl",
+              "analysis_report_scaffold.md",
+              "soul_export_payload_scaffold.json"
+            ],
+            "source_status": "scaffold_reviewed",
+            "report_period": "2024",
+            "case_issuer": "碧桂园"
+          },
+          {
+            "chapter_no": "25",
+            "chapter_title": "31 资本公积",
+            "summary": "#### (31) 资本公积 - 4,062,867千元 - 含股份支付1,480,428千元",
+            "note_scope": "notes_only",
+            "risk_signals": [],
+            "topic_tags": [
+              "资本公积"
+            ],
+            "line_span": {
+              "start": 224,
+              "end": 227
+            },
+            "evidence_refs": [
+              "chapter_records.jsonl",
+              "analysis_report_scaffold.md",
+              "soul_export_payload_scaffold.json"
+            ],
+            "source_status": "scaffold_reviewed",
+            "report_period": "2024",
+            "case_issuer": "碧桂园"
+          },
+          {
+            "chapter_no": "26",
+            "chapter_title": "32 未分配利润",
+            "summary": "#### (32) 未分配利润 - 预计为大额负数（连续亏损） --- ### 利润表附注 (33)-(46)",
+            "note_scope": "notes_only",
+            "risk_signals": [],
+            "topic_tags": [
+              "profitability",
+              "未分配利润"
+            ],
+            "line_span": {
+              "start": 228,
+              "end": 234
+            },
+            "evidence_refs": [
+              "chapter_records.jsonl",
+              "analysis_report_scaffold.md",
+              "soul_export_payload_scaffold.json"
+            ],
+            "source_status": "scaffold_reviewed",
+            "report_period": "2024",
+            "case_issuer": "碧桂园"
+          },
+          {
+            "chapter_no": "27",
+            "chapter_title": "33 营业收入和营业成本",
+            "summary": "#### (33) 营业收入和营业成本 | 项目 | 2024 | 2023(经重列) | |------|------|------| | 营业收入 | 221,633,899 | 355,141,933 | | 营业成本 | 210,062,830 | 338,586,591 | | **毛利** | **11,571,069** | **16,555,342** | | **毛利率** | **5.22%** | **4.66%** | 收入构成: 出售物业占99.2%",
+            "note_scope": "notes_only",
+            "risk_signals": [],
+            "topic_tags": [
+              "profitability",
+              "risk_management",
+              "营业收入和营业成本"
+            ],
+            "line_span": {
+              "start": 235,
+              "end": 244
+            },
+            "evidence_refs": [
+              "chapter_records.jsonl",
+              "analysis_report_scaffold.md",
+              "soul_export_payload_scaffold.json"
+            ],
+            "source_status": "scaffold_reviewed",
+            "report_period": "2024",
+            "case_issuer": "碧桂园"
+          },
+          {
+            "chapter_no": "28",
+            "chapter_title": "35 财务费用（★关键）",
+            "summary": "#### (35) 财务费用（★关键） | 项目 | 2024 | 2023(经重列) | |------|------|------| | 利息收入 | (235,791) | (853,545) | | 利息支出 | 4,021,318 | 5,324,140 | | 减：资本化利息 | (4,021,318) | (5,324,140) | | 其他 | 39,420 | 13,106 | | **净额** | **(196,371)** | **(840,439)** | **★关键发现**: 利息支出40.2亿元**全部资本化**，计入存货成本；- 资本化率: 3.98% - 这意味着利润表中**不体现**任何利息费用 - 计算EBITDA和利息保障倍数时，必须使用附注中的利息支出总额",
+            "note_scope": "notes_only",
+            "risk_signals": [],
+            "topic_tags": [
+              "profitability",
+              "investment_property",
+              "财务费用"
+            ],
+            "line_span": {
+              "start": 245,
+              "end": 258
             },
             "evidence_refs": [
               "chapter_records.jsonl",

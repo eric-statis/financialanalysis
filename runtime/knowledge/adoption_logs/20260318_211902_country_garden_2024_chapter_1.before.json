@@ -1,7 +1,7 @@
 {
   "metadata": {
     "name": "财务分析知识库",
-    "version": "2.4.5",
+    "version": "2.4.4",
     "created": "2026-03-11",
     "last_updated": "2026-03-18",
     "source": "财务知识库.md",
@@ -1326,35 +1326,6 @@
             "source_status": "scaffold_reviewed",
             "report_period": "2024",
             "case_issuer": "恒隆地产"
-          }
-        ]
-      },
-      "country_garden_2024": {
-        "chapters": [
-          {
-            "chapter_no": "1",
-            "chapter_title": "1 货币资金",
-            "summary": "#### (1) 货币资金 | 项目 | 2024 | 2023(经重列) | |------|------|------| | 库存现金 | 204 | 307 | | 银行存款 | 1,361,870 | 2,412,048 | | 其他货币资金(受限) | 17,559,696 | 44,885,441 | | **合计** | **18,921,770** | **47,297,796** | **自由现金** = 1,362,074千元 ≈ **13.6亿元** **受限资金** = 17,559,696千元 ≈ **175.6亿元**（预售物业保证金+冻结资金） **★关键发现**: 受限资金占比高达92.8%；自由可用现金仅13.6亿元，而一年内到期的有息债务超过734亿元，流动性缺口极为严重",
-            "note_scope": "notes_only",
-            "risk_signals": [],
-            "topic_tags": [
-              "cash",
-              "liquidity",
-              "restricted_assets",
-              "货币资金"
-            ],
-            "line_span": {
-              "start": 34,
-              "end": 46
-            },
-            "evidence_refs": [
-              "chapter_records.jsonl",
-              "analysis_report_scaffold.md",
-              "soul_export_payload_scaffold.json"
-            ],
-            "source_status": "scaffold_reviewed",
-            "report_period": "2024",
-            "case_issuer": "碧桂园"
           }
         ]
       }

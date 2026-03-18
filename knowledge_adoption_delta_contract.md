@@ -374,6 +374,8 @@ canonical 审计键由以下字段共同构成：
 
 当前脚本实现仍保留最小兼容口径，后续 Codex 线程应以本契约为准，不应再把旧 `pending_updates` 或 review bundle 当主路径。
 
+R3 live drill 已实际按 `knowledge.case_notes.<case_id>.chapters` 这一路径做了章节级直写与回滚验证；这只说明落地路径已被演练，不改变本契约的 canonical 口径。
+
 ## 7. 最小可执行示例
 
 下面示例展示一条真实章节采纳记录的最小形状。字段可扩展，但核心约束不得缺失。

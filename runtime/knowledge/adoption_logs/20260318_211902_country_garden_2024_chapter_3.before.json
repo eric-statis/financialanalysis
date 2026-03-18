@@ -1,7 +1,7 @@
 {
   "metadata": {
     "name": "财务分析知识库",
-    "version": "2.4.5",
+    "version": "2.4.6",
     "created": "2026-03-11",
     "last_updated": "2026-03-18",
     "source": "财务知识库.md",
@@ -1346,6 +1346,30 @@
             "line_span": {
               "start": 34,
               "end": 46
+            },
+            "evidence_refs": [
+              "chapter_records.jsonl",
+              "analysis_report_scaffold.md",
+              "soul_export_payload_scaffold.json"
+            ],
+            "source_status": "scaffold_reviewed",
+            "report_period": "2024",
+            "case_issuer": "碧桂园"
+          },
+          {
+            "chapter_no": "2",
+            "chapter_title": "2 交易性金融资产",
+            "summary": "#### (2) 交易性金融资产 理财产品仅64,046千元（0.64亿），非保本浮动收益型",
+            "note_scope": "notes_only",
+            "risk_signals": [],
+            "topic_tags": [
+              "debt",
+              "profitability",
+              "交易性金融资产"
+            ],
+            "line_span": {
+              "start": 47,
+              "end": 49
             },
             "evidence_refs": [
               "chapter_records.jsonl",

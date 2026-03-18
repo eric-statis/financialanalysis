@@ -485,20 +485,19 @@ Subagents 协作约束：
 - 生产化 R1 第一版已落地：已明确章节复核状态机、adoption gate、finalization gate、rollback boundary 与 `chapter_review_ledger` 控制面口径
 - 生产化 R2 已完成文档收口：知识 adoption delta contract、审计外壳、rollback 约束与校验规则已统一到仓库文档
 - 生产化 R2 已进一步收口为 canonical contract：后续 Codex 线程必须直接消费 `identity / source / review / operations / evidence_refs / hashes / rollback / audit` 口径，不再自造 flat 变体
-- 生产化 R3/P6 待推进：1-2 个完整案例的 scaffold -> adopt 演练、go-live checklist
+- 生产化 R3 已完成双案例演练：`henglong_2024` 与 `country_garden_2024` 已跑通 scaffold -> adopt -> rollback -> formal closed loop，`P6` 现在可以直接接手 go-live checklist
 
 ### 进行中
 
-- R3 待推进：用 1-2 个完整案例验证 scaffold -> adopt -> formal 闭环
-- P6 待在 R3 跑通后再推进
-- 当前主阻塞不再是抽取链路，而是“复核、直写、回滚、正式成稿”的治理闭环是否足够稳
+- P6 待推进：go-live checklist、人工抽检点和回滚策略
+- 当前主阻塞已从“闭环是否跑通”转为“上线前检查项、抽检点和停机条件是否足够明确”
 - 当前已确认完整链路可按两层运行：`PDF -> MinerU Markdown -> notes_workfile -> batch 抽取层 -> Codex/skill 逐章分析与知识写入`
 
 ### 下一步
 
-- 先推进 R3：用 1-2 个完整案例演练 scaffold -> adopt -> formal 闭环。
-- 复核与直写线程直接消费 `knowledge_adoption_delta_contract.md` 的 canonical 口径，不再沿旧 flat 变体分叉。
-- 最后再整理 P6：go-live checklist、人工抽检点和回滚策略。
+- `R3` 已完成：`henglong_2024` 与 `country_garden_2024` 都已完成 scaffold -> adopt -> rollback -> formal 闭环。
+- 复核与直写线程继续直接消费 `knowledge_adoption_delta_contract.md` 的 canonical 口径，不再沿旧 flat 变体分叉。
+- 接下来只剩 `P6`：go-live checklist、人工抽检点和回滚策略。
 
 ## 15. 与其他文档的关系
 
