@@ -52,6 +52,7 @@ BATCH_TASK_LIST = "batch_task_list.json"
 DEFAULT_DOWNLOAD_THRESHOLD = 8
 DEFAULT_DOWNLOAD_TIMEOUT = 120
 DEFAULT_MINERU_MAX_ATTEMPTS = 2
+P5_BATCH_NAME_PREFIX = "p5_cold_start"
 NOTE_SECTION_KEYWORDS = [
     "财务报表附注",
     "合并财务报表附注",
@@ -730,7 +731,8 @@ def run_batch_pipeline(
     build_review_bundle: bool,
 ) -> Dict[str, Any]:
     batch_script = SCRIPT_DIR / "run_batch_pipeline.py"
-    log_path = batch_run_dir.parent / "run_batch_pipeline.log"
+    batch_run_dir.mkdir(parents=True, exist_ok=True)
+    log_path = batch_run_dir / "run_batch_pipeline.log"
     command = [
         sys.executable,
         str(batch_script),
@@ -755,14 +757,14 @@ def run_batch_pipeline(
 
     batch_manifest_path = batch_run_dir / "batch_manifest.json"
     failed_tasks_path = batch_run_dir / "failed_tasks.json"
-    pending_updates_index_path = batch_run_dir / "pending_updates_index.json"
+    scaffold_index_path = batch_run_dir / "scaffold_index.json"
     return {
         "command": command,
         "returncode": completed.returncode,
         "log_path": str(log_path),
         "batch_manifest_path": str(batch_manifest_path) if batch_manifest_path.exists() else "",
         "failed_tasks_path": str(failed_tasks_path) if failed_tasks_path.exists() else "",
-        "pending_updates_index_path": str(pending_updates_index_path) if pending_updates_index_path.exists() else "",
+        "scaffold_index_path": str(scaffold_index_path) if scaffold_index_path.exists() else "",
     }
 
 
@@ -847,7 +849,7 @@ def main():
                 "batch_run_dir": "",
                 "batch_manifest_path": "",
                 "failed_tasks_path": "",
-                "pending_updates_index_path": "",
+                "scaffold_index_path": "",
                 "log_path": "",
             },
         },
@@ -884,12 +886,19 @@ def main():
         write_json(output_dir / P5_MANIFEST, p5_manifest)
         return
 
-    batch_name = f"p5_cold_start_{p4_dir.name}"
+    batch_name = f"{P5_BATCH_NAME_PREFIX}_{output_dir.name}"
     batch_task_list_payload = build_batch_task_list_payload(batch_name, preparation_manifest["batch_tasks"])
     batch_task_list_path = output_dir / BATCH_TASK_LIST
     write_json(batch_task_list_path, batch_task_list_payload)
 
-    batch_run_dir = output_dir / "batch_run"
+    batch_root = resolve_runtime_path(runtime_config, "batch_root")
+    batch_run_dir = (batch_root / batch_name).resolve()
+    legacy_batch_run_dir = output_dir / "batch_run"
+    if legacy_batch_run_dir.exists():
+        shutil.rmtree(legacy_batch_run_dir)
+    legacy_batch_log_path = output_dir / "run_batch_pipeline.log"
+    if legacy_batch_log_path.exists():
+        legacy_batch_log_path.unlink()
     batch_result = run_batch_pipeline(
         runtime_config_path=runtime_config_path,
         batch_task_list_path=batch_task_list_path,
@@ -899,11 +908,12 @@ def main():
 
     p5_manifest["stages"]["batch"] = {
         "status": "success" if batch_result["returncode"] == 0 else "failed",
+        "batch_name": batch_name,
         "task_list_path": str(batch_task_list_path),
         "batch_run_dir": str(batch_run_dir),
         "batch_manifest_path": batch_result["batch_manifest_path"],
         "failed_tasks_path": batch_result["failed_tasks_path"],
-        "pending_updates_index_path": batch_result["pending_updates_index_path"],
+        "scaffold_index_path": batch_result["scaffold_index_path"],
         "log_path": batch_result["log_path"],
     }
     if batch_result["returncode"] != 0:

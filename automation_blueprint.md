@@ -40,7 +40,7 @@
   -> 分析引擎层（Financial Analysis）
   -> 成品导出层（Soul Excel）
   -> 运行治理层（Manifest / QA / Retry）
-  -> 知识进化层（Pending -> Review -> Adopt）
+  -> 知识进化层（Scaffold -> Codex Review -> Direct Adopt）
 ```
 
 ## 5. 目标产物
@@ -57,7 +57,11 @@
 - `focus_list.json`
 - `final_data.json`
 - `soul_export_payload.json`
-- `pending_updates.json`
+- `analysis_report_scaffold.md`
+- `focus_list_scaffold.json`
+- `final_data_scaffold.json`
+- `soul_export_payload_scaffold.json`
+- `runtime/knowledge/adoption_logs/`
 
 ### 5.3 原始与中间数据
 
@@ -143,7 +147,6 @@
 - `final_data.json`
 - `focus_list.json`
 - `chapter_records.jsonl`
-- `pending_updates.json`
 - Soul 导出数据契约
 
 ### 6.5 Soul Excel 导出层
@@ -175,12 +178,13 @@
 
 职责：
 
-- 把一次案例里新发现的字段、规则、专题候选沉淀为待审核项。
-- 审核后再进入正式知识库。
+- 把一次案例里新发现的字段、规则、专题候选经 Codex 逐章复核后直接沉淀为正式知识库。
+- 通过 adoption log 和 rollback 工具维持可审计、可回滚。
 
 约束：
 
-- `pending_updates.json` 不得直接影响对外交付结构。
+- scaffold 只能作为 Codex 复核起点，不能直接视为最终知识。
+- adoption log 缺失的写入视为非法实现。
 - 知识迭代与 Soul 稳定版本必须解耦。
 
 ## 7. Soul 当前设计结论
@@ -285,13 +289,13 @@
 
 目标：
 
-- 建立 `pending -> review -> adopt` 流程。
+- 建立 `scaffold -> Codex review -> direct adopt` 流程。
 
 典型任务：
 
-- 候选项分类
-- 审核标准
-- 版本化变更日志
+- adoption delta 规范
+- 审计日志
+- 回滚与摘要工具
 
 ### W6 QA、回归与可运维性
 
@@ -415,19 +419,26 @@ Subagents 协作约束：
 
 - 把项目从“已能跑通”推进到“已具备正式投入使用所需的 runtime、registry、冷启动仿真和上线门禁”。
 
+### Phase 7：复核与直写控制面
+
+目标：
+
+- 把 scaffold-only 之后的章节复核、knowledge adopt、回滚与正式成稿收敛成可持续执行的控制面。
+
 ## 13. 当前优先级排序
 
-截至 2026-03-17，在 W1-W7 主线已基本落地后，建议优先级如下：
+截至 2026-03-18，在 W1-W7 主线和 P1-P5 基础设施已基本落地后，建议优先级如下：
 
-1. 补齐生产化基础设施：runtime 外部数据层、全局 registry、skill/runtime 绑定。
-2. 做“自动找 10 份财报”的冷启动全真生产仿真。
-3. 形成 go-live checklist 和上线门禁。
+1. 建立复核与直写控制面（R1）。
+2. 固化 knowledge adoption delta contract 与章节级 review ledger（R2）。
+3. 用 1-2 个完整案例演练 scaffold -> adopt -> formal 的闭环（R3）。
+4. 在闭环稳定后再整理 go-live checklist（P6）。
 
 排序原因：
 
-- W5、W6.1、W7 已具备可用基础，但当前仍主要面向项目内运行，不等于已具备正式投入使用所需的运行时治理能力。
-- 生产阶段最关键的新问题不是继续细化单点功能，而是补齐外部 runtime、全局历史 registry 和已安装 skill 的稳定绑定。
-- 在没有 runtime/registry 的前提下直接做 10 案仿真，无法充分验证“历史去重、重跑判定、跨批次追踪”这些生产问题。
+- scaffold-only 已切换为当前主线；正式知识学习不再依赖 `pending_updates`，而是依赖逐章复核后的 direct adopt。
+- 当前最关键的缺口不是新的抽取能力，而是章节复核状态机、delta 契约、rollback 约束和正式成稿门禁。
+- 没有先跑通 1-2 个完整案例的 scaffold -> adopt 闭环，就直接上 P6 会缺少最小可验证基线。
 
 ## 14. 当前状态看板
 
@@ -445,17 +456,17 @@ Subagents 协作约束：
 - 已完成恒隆地产、碧桂园、杭海新城控股三案例的 Soul v1.1-alpha 样稿与 PDF/PNG 预览产物
 - 已验证首轮专题模块：`investment_property`、`restricted_assets`、`lgfv_features`、`external_guarantees`
 - 已将 `financial_analyzer.py` 的最终 Excel 导出切换为“先输出稳定契约，再调用独立 Soul exporter”模式，`financial_output.xlsx` 现由 W4 导出层生成
-- `financial-analyzer/SKILL.md` 已定义 `candidate / validated / promoted` 分级口径，`knowledge_manager.py` 已具备 `pending_updates` 校验与汇总能力，可作为 W5 起点
-- W5 已建立知识治理最小闭环：`knowledge_manager.py` 新增 `validate-pending`、`build-review-bundle`、`show-review-summary`，可基于 3 个 W6 案例执行候选项校验、跨案例归并、`candidate/validated/promoted` 推荐分级，并输出 `knowledge_review_bundle.json` 与 `knowledge_review_report.md`
+- W5 路线已调整：不再把“知识学习”压在规则脚本和 `pending_updates` 上，而是改为“模板脚本先产 scaffold，Codex 再逐章复核、逐章写入正式知识库，并通过 adoption log 保持可审计和可回滚”
+- `financial-analyzer/SKILL.md` 已切换为 Codex-driven workflow：脚本只负责通用模板抽取，知识学习与最终分析由 Codex 按章完成，正式写入必须带 adoption log
 - 已新增 `financial-analyzer/scripts/run_w6_regression.py`，将 W6 最小回归收敛为固定 3 案例重跑 + 结构校验
 - 已生成 `financial-analyzer/test_runs/w6_henglong`、`w6_country_garden`、`w6_hanghai` 三个专用回归目录
 - 已生成 `financial-analyzer/test_runs/w6_regression_results.json` 与 `financial-analyzer/test_runs/w6_regression_report.md`
 - 已确认 W6 当前基线只认“当前主线重跑产物”，不以历史 `*_soul_contract`、`*_v1_1_alpha`、`henglong_v3` 等目录判定通过
 - W6.1 已将 `notes_workfile_missing`、`notes_workfile_invalid` 纳入失败路径回归，并新增 `w6_missing_notes_workfile`、`w6_invalid_notes_workfile` 专用目录
-- W6.1 已把 workbook 预览结构检查纳入硬门禁：要求生成 `preview.pdf` 与连续编号的 `preview-*.png`，且 PNG 尺寸一致
+- W6.1 已把 scaffold-only 结构校验纳入硬门禁：要求成功态生成 `chapter_records.jsonl`、`analysis_report_scaffold.md`、`focus_list_scaffold.json`、`final_data_scaffold.json`、`soul_export_payload_scaffold.json`，并要求正式 `analysis_report.md`、`final_data.json`、`soul_export_payload.json`、`financial_output.xlsx`、`preview.*` 不再出现在模板脚本成功态
 - W6.1 已新增按案例维护的 golden 基线 JSON，并对成功态 payload 子集、失败态 manifest 子集执行非门禁 diff 评估
-- W7 已新增 `financial-analyzer/scripts/run_batch_pipeline.py`，支持 Markdown-first 任务清单批跑、失败记录、`--resume`、`--only-failed`、`pending_updates_index.json` 与可选的 W5 review bundle 构建
-- W7 已补充 `financial-analyzer/testdata/w7_batch_tasks/` 样例任务清单，以及 `financial-analyzer/scripts/run_w7_batch_regression.py` 回归脚本，覆盖混合批次、全成功批次、`--resume`、`--only-failed` 和 review bundle 门槛
+- W7 已调整为“抽取层 batch”：`financial-analyzer/scripts/run_batch_pipeline.py` 仍支持 Markdown-first 任务清单批跑、失败记录、`--resume`、`--only-failed`，但主成功产物已改为 `chapter_records + scaffold`，不再把 `pending_updates/review bundle` 作为默认主链
+- W7 已补充 `financial-analyzer/testdata/w7_batch_tasks/` 样例任务清单，以及 `financial-analyzer/scripts/run_w7_batch_regression.py` 回归脚本，覆盖混合批次、全成功批次、`--resume`、`--only-failed` 和 deprecated governance 门槛
 - 生产化 P2 已完成第一版：新增项目内 processed reports registry 规范文档、runtime helper、registry helper，并把 [runtime/state/registry/processed_reports/processed_reports.json](/Users/yetim/project/financialanalysis/runtime/state/registry/processed_reports/processed_reports.json) 接入 `run_batch_pipeline.py`
 - P2 已实现 W6 历史单案回填、W7 batch 回填告警口径、全局去重/重跑判定，以及 `financial-analyzer/scripts/run_p2_registry_regression.py` 专项回归脚本
 - 生产化 P3 已完成第一版：已安装 `financial-analyzer` skill 现通过 `--runtime-config` / `FINANCIAL_ANALYZER_RUNTIME_CONFIG` / `cwd` 向上搜索三层优先级稳定绑定项目内 [runtime/runtime_config.json](/Users/yetim/project/financialanalysis/runtime/runtime_config.json)
@@ -470,23 +481,26 @@ Subagents 协作约束：
 - 已验证新一轮 P4/P5：基于 [runtime/state/tmp/p4_auto_test_entry/20260317_163558](/Users/yetim/project/financialanalysis/runtime/state/tmp/p4_auto_test_entry/20260317_163558) 的 10 个 CNInfo 镜像样本，P5 下载阶段已在 [runtime/state/tmp/p5_cold_start/20260317_163658](/Users/yetim/project/financialanalysis/runtime/state/tmp/p5_cold_start/20260317_163658) 实现 `10/10` 下载成功并通过 `>= 8/10` gate
 - P5 准备阶段已补一轮韧性增强：`run_p5_cold_start_simulation.py` 现支持 `--resume-output-dir` 复用已下载 / 已解析产物、为单份 MinerU 增加最大尝试次数与耗时记录，并把“批量准备失败后必须全量重跑”的成本降下来
 - `mineru/scripts/mineru_stable.py` 已补 `mineru/config.json` token fallback；即使调用方未显式注入 `MINERU_TOKEN`，脚本自身也会先尝试读取本地配置，避免再次出现“manifest 记录 token_present=true、实际子进程却报未设置 token”的割裂状态
+- 2026-03-17 新一轮 P5 已在 [runtime/state/tmp/p5_cold_start/20260317_171925](/Users/yetim/project/financialanalysis/runtime/state/tmp/p5_cold_start/20260317_171925) 完成 `10/10` 下载、`10/10` 准备和 `10/10` batch 成功；P5 主目录保留编排与中间产物，而正式 batch 产物已对齐写入 `runtime/state/batches/`
+- `financial_analyzer.py` 已切换为 scaffold-only 模式：脚本主线只生成 `chapter_records.jsonl`、`analysis_report_scaffold.md`、`focus_list_scaffold.json`、`final_data_scaffold.json`、`soul_export_payload_scaffold.json` 和标记 `codex_review_required=true` 的 `run_manifest.json`
+- 已新增 `write_knowledge_adoption.py`、`rollback_knowledge_adoption.py`、`show_knowledge_adoption.py`，用于支撑 Codex 逐章直写正式 `runtime/knowledge/knowledge_base.json` 并保留 adoption log / rollback 能力
+- 生产化 R1/R2/R3 待启动：复核与直写控制面、知识 adoption delta contract、1-2 个完整案例的 scaffold -> adopt 演练
 
 ### 进行中
 
-- W5 后续项：基于 `financial-analyzer/test_runs/w5_knowledge_governance/` 的审核包做抽样复核，并设计独立的 apply 流程；当前仍不直接批量写入 `knowledge_base.json`
-- 更细粒度导出 QA 的剩余项：workbook 单元格级 golden diff、预览版式语义检查、`soul_export_failed` 等更深失败矩阵
-- W7 后续项：如需进一步统一状态机，仍可在 P5 第一版编排已验证后，再评估是否把 ChinaMoney / MinerU 上游入口继续收敛为与当前 batch runner 更一致的 CLI
-- 生产化阶段进行中：P1/P2/P3/P4 已完成第一版，P5 已完成第一版入口与门槛控制，P6 仍待推进
-- 当前新的主阻塞已从下载切换为 MinerU/准备阶段：下载 gate 已通过，但 `notes_workfile` 生成前的 MinerU 解析仍需继续压测和收敛
-- 当前已确认单样本链路 `PDF -> MinerU Markdown -> notes_workfile` 可跑通，下一阶段重点不再是功能缺口，而是批量解析的耗时分布、偶发失败率和断点恢复效率
+- R1 待推进：把章节复核状态机、finalization gate 与 direct adopt 的职责边界写成统一控制面
+- R2 待推进：把 delta contract、rollback 约束和审计字段写成正式规范
+- R3 待推进：用 1-2 个完整案例验证 scaffold -> adopt -> formal 闭环
+- P6 待在 R1-R3 跑通后再推进
+- 当前主阻塞不再是抽取链路，而是“复核、直写、回滚、正式成稿”的治理闭环是否足够稳
+- 当前已确认完整链路可按两层运行：`PDF -> MinerU Markdown -> notes_workfile -> batch 抽取层 -> Codex/skill 逐章分析与知识写入`
 
 ### 下一步
 
-- 先基于最新 P4 输出目录实际运行 `financial-analyzer/scripts/run_p5_cold_start_simulation.py`，确认下载阶段 manifest 与 `>= 8/10` gate 是否通过。
-- 继续基于已通过下载 gate 的 [runtime/state/tmp/p5_cold_start/20260317_163658](/Users/yetim/project/financialanalysis/runtime/state/tmp/p5_cold_start/20260317_163658) 处理 MinerU、`notes_workfile`、batch task list 与 batch 结果，把当前阻塞从“下载”推进到“准备链路”。
-- 优先用带 `--resume-output-dir` 的 P5 重跑结果继续压测准备阶段，统计每份 PDF 的 MinerU 耗时与失败原因，再决定是否要上更激进的并发解析或更细粒度 retry 策略。
-- 保留 ChinaMoney 附件网关 `421` 作为环境级风险记录，但生产仿真默认应优先复用官方镜像样本，不再把附件网关是否恢复作为 P5 下载成功的唯一前提。
-- 最后整理生产化 P6：go-live checklist、人工复核点和回滚策略。
+- 先推进 R1：把章节复核状态机、finalization gate、direct adopt 边界写清楚。
+- 再推进 R2：把知识 adoption delta contract 和回滚字段固定下来。
+- 然后推进 R3：用 1-2 个完整案例演练 scaffold -> adopt -> formal 闭环。
+- 最后再整理 P6：go-live checklist、人工抽检点和回滚策略。
 
 ## 15. 与其他文档的关系
 
@@ -498,6 +512,8 @@ Subagents 协作约束：
 - `codex_execution_runbook.md` 负责：如何实际开启和组织多个 Codex 执行线程。
 - `runtime_external_data_layer_spec.md` 负责：项目内 production runtime 的目录结构、`runtime_config` 契约、Git 边界与 skill/runtime 读写边界。
 - `production_execution_runbook.md` 负责：生产化阶段如何逐个开启 Codex 对话并执行 runtime/registry/go-live 相关任务。
+- `codex_review_and_finalization_runbook.md` 负责：scaffold-only 之后的复核/直写/收尾 prompt pack。
+- `knowledge_adoption_delta_contract.md` 负责：章节级知识直写的 delta 契约与字段口径。
 
 ## 16. 后续维护要求
 

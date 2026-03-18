@@ -1,6 +1,6 @@
 {
   "summary": {
-    "generated_at": "2026-03-17T14:56:08+08:00",
+    "generated_at": "2026-03-18T14:40:22+08:00",
     "scenario_count": 5,
     "all_passed": true,
     "passed_scenarios": 5,
@@ -20,7 +20,7 @@
           "--build-review-bundle"
         ],
         "returncode": 0,
-        "stdout_tail": "[OK] 批次目录: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/batches/w7_mixed_smoke\n[OK] 结果汇总: success=3, failed=2, pending=0\n[OK] failed_tasks: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/batches/w7_mixed_smoke/failed_tasks.json\n[OK] pending_updates_index: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/batches/w7_mixed_smoke/pending_updates_index.json\n[OK] governance_status: review_bundle_built"
+        "stdout_tail": "[OK] 批次目录: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/batches/w7_mixed_smoke\n[OK] 结果汇总: success=3, failed=2, pending=0\n[OK] failed_tasks: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/batches/w7_mixed_smoke/failed_tasks.json\n[OK] scaffold_index: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/batches/w7_mixed_smoke/scaffold_index.json\n[INFO] governance_note: build_review_bundle_ignored_in_scaffold_mode"
       },
       "checks": [
         {
@@ -28,7 +28,7 @@
           "passed": true,
           "details": {
             "manifest_exists": true,
-            "pending_updates_index_exists": true,
+            "scaffold_index_exists": true,
             "failed_tasks_exists": true,
             "summary": {
               "task_count": 5,
@@ -36,12 +36,12 @@
               "failed_count": 2,
               "pending_count": 0
             },
-            "governance_status": "review_bundle_built"
+            "governance_status": "deprecated"
           },
           "errors": []
         },
         {
-          "name": "pending_updates_index",
+          "name": "scaffold_index",
           "passed": true,
           "details": {
             "success_task_count": 3,
@@ -62,8 +62,8 @@
           "name": "governance_review_artifacts",
           "passed": true,
           "details": {
-            "bundle_exists": true,
-            "report_exists": true
+            "bundle_exists": false,
+            "report_exists": false
           },
           "errors": []
         }
@@ -82,7 +82,7 @@
           "--build-review-bundle"
         ],
         "returncode": 0,
-        "stdout_tail": "[OK] 批次目录: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/batches/w7_success_smoke\n[OK] 结果汇总: success=3, failed=0, pending=0\n[OK] failed_tasks: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/batches/w7_success_smoke/failed_tasks.json\n[OK] pending_updates_index: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/batches/w7_success_smoke/pending_updates_index.json\n[OK] governance_status: review_bundle_built"
+        "stdout_tail": "[OK] 批次目录: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/batches/w7_success_smoke\n[OK] 结果汇总: success=3, failed=0, pending=0\n[OK] failed_tasks: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/batches/w7_success_smoke/failed_tasks.json\n[OK] scaffold_index: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/batches/w7_success_smoke/scaffold_index.json\n[INFO] governance_note: build_review_bundle_ignored_in_scaffold_mode"
       },
       "checks": [
         {
@@ -90,7 +90,7 @@
           "passed": true,
           "details": {
             "manifest_exists": true,
-            "pending_updates_index_exists": true,
+            "scaffold_index_exists": true,
             "failed_tasks_exists": true,
             "summary": {
               "task_count": 3,
@@ -98,12 +98,12 @@
               "failed_count": 0,
               "pending_count": 0
             },
-            "governance_status": "review_bundle_built"
+            "governance_status": "deprecated"
           },
           "errors": []
         },
         {
-          "name": "pending_updates_index",
+          "name": "scaffold_index",
           "passed": true,
           "details": {
             "success_task_count": 3,
@@ -124,8 +124,8 @@
           "name": "governance_review_artifacts",
           "passed": true,
           "details": {
-            "bundle_exists": true,
-            "report_exists": true
+            "bundle_exists": false,
+            "report_exists": false
           },
           "errors": []
         }
@@ -144,7 +144,7 @@
           "--build-review-bundle"
         ],
         "returncode": 0,
-        "stdout_tail": "[OK] 批次目录: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/batches/w7_pair_smoke\n[OK] 结果汇总: success=2, failed=0, pending=0\n[OK] failed_tasks: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/batches/w7_pair_smoke/failed_tasks.json\n[OK] pending_updates_index: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/batches/w7_pair_smoke/pending_updates_index.json\n[INFO] governance_note: insufficient_successful_cases_for_review_bundle"
+        "stdout_tail": "[OK] 批次目录: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/batches/w7_pair_smoke\n[OK] 结果汇总: success=2, failed=0, pending=0\n[OK] failed_tasks: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/batches/w7_pair_smoke/failed_tasks.json\n[OK] scaffold_index: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/batches/w7_pair_smoke/scaffold_index.json\n[INFO] governance_note: build_review_bundle_ignored_in_scaffold_mode"
       },
       "checks": [
         {
@@ -152,7 +152,7 @@
           "passed": true,
           "details": {
             "manifest_exists": true,
-            "pending_updates_index_exists": true,
+            "scaffold_index_exists": true,
             "failed_tasks_exists": true,
             "summary": {
               "task_count": 2,
@@ -160,12 +160,12 @@
               "failed_count": 0,
               "pending_count": 0
             },
-            "governance_status": "not_built"
+            "governance_status": "deprecated"
           },
           "errors": []
         },
         {
-          "name": "pending_updates_index",
+          "name": "scaffold_index",
           "passed": true,
           "details": {
             "success_task_count": 2,
@@ -207,15 +207,15 @@
           "--resume"
         ],
         "returncode": 0,
-        "stdout_tail": "[OK] 批次目录: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/batches/w7_success_smoke\n[OK] 结果汇总: success=3, failed=0, pending=0\n[OK] failed_tasks: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/batches/w7_success_smoke/failed_tasks.json\n[OK] pending_updates_index: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/batches/w7_success_smoke/pending_updates_index.json\n[OK] governance_status: review_bundle_built"
+        "stdout_tail": "[OK] 批次目录: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/batches/w7_success_smoke\n[OK] 结果汇总: success=3, failed=0, pending=0\n[OK] failed_tasks: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/batches/w7_success_smoke/failed_tasks.json\n[OK] scaffold_index: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/batches/w7_success_smoke/scaffold_index.json\n[INFO] governance_note: build_review_bundle_ignored_in_scaffold_mode"
       },
       "checks": [
         {
           "name": "latest_run",
           "passed": true,
           "details": {
-            "started_at": "2026-03-17T14:56:08+08:00",
-            "completed_at": "2026-03-17T14:56:08+08:00",
+            "started_at": "2026-03-18T14:40:21+08:00",
+            "completed_at": "2026-03-18T14:40:21+08:00",
             "resume": true,
             "only_failed": false,
             "build_review_bundle": true,
@@ -248,15 +248,15 @@
           "--only-failed"
         ],
         "returncode": 0,
-        "stdout_tail": "[OK] 批次目录: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/batches/w7_mixed_smoke\n[OK] 结果汇总: success=3, failed=2, pending=0\n[OK] failed_tasks: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/batches/w7_mixed_smoke/failed_tasks.json\n[OK] pending_updates_index: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/batches/w7_mixed_smoke/pending_updates_index.json\n[OK] governance_status: review_bundle_built"
+        "stdout_tail": "[OK] 批次目录: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/batches/w7_mixed_smoke\n[OK] 结果汇总: success=3, failed=2, pending=0\n[OK] failed_tasks: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/batches/w7_mixed_smoke/failed_tasks.json\n[OK] scaffold_index: /Users/yetim/project/financialanalysis/financial-analyzer/test_runs/batches/w7_mixed_smoke/scaffold_index.json\n[INFO] governance_note: build_review_bundle_ignored_in_scaffold_mode"
       },
       "checks": [
         {
           "name": "latest_run",
           "passed": true,
           "details": {
-            "started_at": "2026-03-17T14:56:08+08:00",
-            "completed_at": "2026-03-17T14:56:08+08:00",
+            "started_at": "2026-03-18T14:40:21+08:00",
+            "completed_at": "2026-03-18T14:40:22+08:00",
             "resume": false,
             "only_failed": true,
             "build_review_bundle": true,

@@ -11,7 +11,7 @@
 
 它不是项目蓝图的替代品，而是蓝图的执行说明书。整体设计仍以 `automation_blueprint.md` 为准。
 
-如果项目已完成 W1-W7 主线、准备进入正式投入使用阶段，则继续阅读 `production_execution_runbook.md`，不要沿用本手册中的早期实施顺序来组织生产化任务。
+如果项目已完成 W1-W7 主线、并且当前口径已经切换为 scaffold-only + 直写式知识采纳，则继续阅读 `codex_review_and_finalization_runbook.md` 与 `production_execution_runbook.md`，不要沿用本手册中的早期 W5/W6.1/W7 顺序来组织后续任务。
 
 ## 2. 推荐工作模式
 
@@ -77,21 +77,23 @@
 
 ## 4. 当前剩余执行顺序
 
-基于 2026-03-17 当前仓库进展，W4 契约、W4 模板打样、W3/W4 导出分层和 W6 最小回归已经落地；当前剩余主线建议如下：
+基于当前仓库进展，W4 契约、W4 模板打样、W3/W4 导出分层、W6 最小回归和 scaffold-only 口径都已经落地；当前主线应切到复核与直写控制面，建议如下：
 
 | 顺序 | 类型 | Workstream | 主目标 | 交付物 |
 |------|------|------------|--------|--------|
 | 0 | 总控线程 | PM | 维护蓝图、排序任务、审查结果 | 状态更新、下一步安排 |
-| 1 | 执行线程 | W5 | 建立知识治理最小闭环 | 候选项汇总、分级规则、审核入口 |
-| 2 | 并行增强轨 | W6.1 | 补齐更细粒度 QA | 失败路径回归、预览检查、golden diff 方案 |
-| 3 | 执行线程 | W7 | 任务编排与批处理 | 编排方案或入口脚本 |
+| 1 | 执行线程 | R1 | 建立 Codex 复核与直写控制面 | 章节状态机、adoption gate、finalization gate |
+| 2 | 执行线程 | R2 | 固化知识采纳 delta 契约 | delta schema、审计键、回滚边界 |
+| 3 | 执行线程 | R3 | 做 1-2 个完整案例演练 | scaffold -> 复核 -> 直写 -> formalization |
+| 4 | 执行线程 | P6 | 形成 go-live checklist | 上线门禁、人工复核点、停机/回滚策略 |
 
 说明：
 
 - W4、W3/W4 和 W6 基线不是取消，而是已完成的上游阶段；只有发现回归问题时才回头重开。
-- W5 仍是主线程下一步，因为仓库里已经有 3 个案例的 `pending_updates.json` 样本，也已有 `knowledge_manager.py` 的校验/汇总能力。
-- `W6.1` 是当前最适合结合 `subagents` 的并行增强轨，可并行拆成失败路径、预览检查、golden diff 等侧任务。
-- W7 不要早于 W5/W6.1 的边界稳定，否则批处理会先固化一条知识治理和 QA 口径都未完全定型的链路。
+- `R1` 先把章节状态机、直写边界、finalization gate 和回滚路径统一起来，避免直接把旧 W5 继续当主线。
+- `R2` 负责把 delta 契约和审计字段固定下来，后续线程才能稳定消费。
+- `R3` 是最小的真实演练，先用 1-2 个案例把 scaffold -> review -> adopt -> formalization 跑通。
+- `P6` 只有在 `R1/R2/R3` 收敛后才适合执行，否则 go-live checklist 只能写成空清单。
 
 ## 5. 每次新线程的标准开场动作
 
@@ -330,7 +332,7 @@ git branch -r
 
 ### 目标
 
-- 在不污染 Soul 对外交付的前提下，为 `pending_updates.json` 建立最小可用的治理闭环。
+- 在不污染 Soul 对外交付的前提下，为正式知识库建立最小可用的 Codex 直写与审计闭环。
 
 ### 开始前阅读
 
@@ -339,7 +341,10 @@ git branch -r
 - `financial-analyzer/references/output_contract.md`
 - `financial-analyzer/references/open_record_protocol.md`
 - `financial-analyzer/scripts/knowledge_manager.py`
-- 至少 3 个案例的 `pending_updates.json`
+- `financial-analyzer/scripts/write_knowledge_adoption.py`
+- `financial-analyzer/scripts/rollback_knowledge_adoption.py`
+- `financial-analyzer/scripts/show_knowledge_adoption.py`
+- 至少 3 个案例的章节复核记录或 scaffold 产物
 
 ### 本线程不做
 
@@ -349,30 +354,30 @@ git branch -r
 
 ### 交付物
 
-- 多案例 `pending_updates` 汇总结果
-- `candidate / validated / promoted` 的实际升级规则
-- 审核入口或审核说明
-- 明确哪些候选只保留内部、哪些可进入后续正式评审
+- 多案例逐章复核摘要
+- adoption log 规范
+- 正式知识库直写与回滚入口说明
+- 明确哪些知识增量应直接入库，哪些只保留案例级备注
 
 ### 验收标准
 
-1. 能校验候选项元数据完整性。
-2. 能识别跨案例重复出现的主题、字段、规则候选。
-3. 能把“候选观察”与“正式采纳”明确隔离。
+1. 能校验章节复核产物和知识增量元数据完整性。
+2. 能识别跨案例重复出现的主题、字段、规则并形成可复用摘要。
+3. 能把“案例观察”与“正式采纳”明确隔离。
 4. 不会让 W5 的结果直接污染 Soul 导出契约。
-5. 主线程能把升级规则和审核入口回写到规范文档。
+5. 主线程能把直写、回滚和摘要规则回写到规范文档。
 
 ### 可直接复制的提示词
 
 ```text
-先阅读 AGENTS.md、automation_blueprint.md、financial-analyzer/SKILL.md、financial-analyzer/references/output_contract.md、financial-analyzer/references/open_record_protocol.md，以及 financial-analyzer/scripts/knowledge_manager.py。当前聚焦 W5。请基于至少三个案例的 pending_updates.json，建立最小可用的知识治理闭环：完成候选项校验、跨案例汇总、candidate/validated/promoted 升级规则和审核入口设计，但不要直接批量写入 knowledge_base.json，也不要修改 Soul 结构。
+先阅读 AGENTS.md、automation_blueprint.md、financial-analyzer/SKILL.md、financial-analyzer/references/output_contract.md、financial-analyzer/references/open_record_protocol.md，以及 financial-analyzer/scripts/knowledge_manager.py、write_knowledge_adoption.py、rollback_knowledge_adoption.py、show_knowledge_adoption.py。当前聚焦 W5。请基于至少三个案例的 scaffold 产物和章节复核记录，建立最小可用的知识直写闭环：完成知识增量校验、跨案例摘要、adoption log 规范和审核入口设计，但不要修改 Soul 结构。
 ```
 
 ## 6.6 线程 F：W6.1 / 更细粒度 QA（适合结合 Subagents,已完成）
 
 ### 目标
 
-- 在 W6 最小回归已通过的基础上，补齐失败路径回归、预览检查和内容级差异校验。
+- 在 W6 最小回归已通过的基础上，补齐 scaffold-only 的失败路径回归、正式产物缺失检查和受控差异校验。
 
 ### 开始前阅读
 
@@ -384,7 +389,7 @@ git branch -r
 ### 推荐的 Subagents 拆法
 
 1. 一个子线程专门补失败路径回归，例如 `missing_notes_workfile`
-2. 一个子线程专门评估 workbook 预览或 PNG/PDF 视觉检查
+2. 一个子线程专门评估 scaffold 产物完整性和正式产物缺失
 3. 一个子线程专门设计可持续的 golden diff 范围
 
 主线程负责：
@@ -403,20 +408,20 @@ git branch -r
 
 - W6.1 检查方案
 - 至少一个新增失败路径回归
-- 预览检查或 golden diff 的落地建议
+- scaffold 完整性或 golden diff 的落地建议
 - 明确哪些检查先进入主线，哪些保留为后续增强
 
 ### 验收标准
 
 1. 至少补上一条失败路径回归。
-2. 能说明预览检查是否值得进入主线。
+2. 能说明 scaffold-only 的正式产物缺失检查是否足够。
 3. 能说明 golden diff 应比较哪些稳定字段，而不是比整个工作簿二进制。
 4. 使用 `subagents` 时，主线程仍能统一收敛结果并更新文档。
 
 ### 可直接复制的提示词
 
 ```text
-先阅读 AGENTS.md、automation_blueprint.md、financial-analyzer/scripts/run_w6_regression.py，以及最近一次 W6 回归结果。当前聚焦 W6.1。请在 W6 最小回归已通过的前提下，补齐失败路径回归、评估 workbook 预览检查和 golden diff 范围；如果适合，请使用 subagents 并行处理这些子问题，但主线程要统一整合结果，不要多人同时改同一个主回归入口。
+先阅读 AGENTS.md、automation_blueprint.md、financial-analyzer/scripts/run_w6_regression.py，以及最近一次 W6 回归结果。当前聚焦 W6.1。请在 W6 最小回归已通过的前提下，补齐失败路径回归、评估 scaffold-only 的正式产物缺失检查和 golden diff 范围；如果适合，请使用 subagents 并行处理这些子问题，但主线程要统一整合结果，不要多人同时改同一个主回归入口。
 ```
 
 ## 6.7 线程 G：W7 / 编排与批处理（已完成 v1）
@@ -451,12 +456,12 @@ git branch -r
 1. 能定义任务清单格式。
 2. 能串起下载、解析、分析、导出。
 3. 能处理失败重试或失败记录。
-4. 能明确 `pending_updates` 在编排中的沉淀位置和人工审核边界。
+4. 能明确 scaffold 产物、正式产物与知识写入的交接边界。
 
 ### 可直接复制的提示词
 
 ```text
-先阅读 AGENTS.md 和 automation_blueprint.md，以及最新的 W5 治理规则文档。当前聚焦 W7。请基于现有稳定链路设计任务编排与批处理入口，要求支持任务清单、失败记录、pending_updates 的沉淀位置和人工审核边界，但不要重新设计 Soul 结构或数据契约。
+先阅读 AGENTS.md 和 automation_blueprint.md，以及最新的 W5 治理规则文档。当前聚焦 W7。请基于现有稳定链路设计任务编排与批处理入口，要求支持任务清单、失败记录、scaffold 产物和正式产物的交接边界，但不要重新设计 Soul 结构或数据契约。
 ```
 
 ## 7. 线程完成后的收尾动作
@@ -478,20 +483,32 @@ git branch -r
 3. 在一个线程里同时重做分析逻辑和 Excel 结构。
 4. 没有更新蓝图，只把决策留在对话里。
 5. 为了开多个 Codex 对话而创建多个长期 Git 分支。
-6. 在 `W5` 治理边界未明确前，就先把 `pending_updates` 编进自动批处理。
+6. 在 `W5` 直写与审计边界未明确前，就先把知识写入编进自动批处理。
 
 ## 9. 建议你现在就怎么开始
 
-如果你现在需要继续主线程，建议下一步直接开 `W5`：
+如果你现在需要继续主线程，建议下一步直接开 `R1`：
 
 ```text
-先阅读 AGENTS.md、automation_blueprint.md、financial-analyzer/SKILL.md、financial-analyzer/references/output_contract.md、financial-analyzer/references/open_record_protocol.md，以及 financial-analyzer/scripts/knowledge_manager.py。当前聚焦 W5。请基于至少三个案例的 pending_updates.json，建立最小可用的知识治理闭环：完成候选项校验、跨案例汇总、candidate/validated/promoted 升级规则和审核入口设计，但不要直接批量写入 knowledge_base.json，也不要修改 Soul 结构。
+先阅读 AGENTS.md、automation_blueprint.md、codex_review_and_finalization_runbook.md、financial-analyzer/SKILL.md、financial-analyzer/references/output_contract.md、financial-analyzer/references/open_record_protocol.md，以及 financial-analyzer/scripts/knowledge_manager.py、write_knowledge_adoption.py、rollback_knowledge_adoption.py、show_knowledge_adoption.py。当前聚焦 R1：Codex 复核与直写控制面。请基于 scaffold-only 口径，建立章节状态机、adoption gate、finalization gate 和回滚边界，但不要修改 Soul 结构，也不要回到旧的 pending_updates 主路径。
 ```
 
-如果你想开始第一条真正适合使用 `subagents` 的并行增强轨，建议开 `W6.1`：
+如果你要先把正式知识采纳的结构化输入固定下来，建议开 `R2`：
 
 ```text
-先阅读 AGENTS.md、automation_blueprint.md、financial-analyzer/scripts/run_w6_regression.py，以及最近一次 W6 回归结果。当前聚焦 W6.1。请在 W6 最小回归已通过的前提下，补齐失败路径回归、评估 workbook 预览检查和 golden diff 范围；如果适合，请使用 subagents 并行处理这些子问题，但主线程要统一整合结果，不要多人同时改同一个主回归入口。
+先阅读 AGENTS.md、automation_blueprint.md、codex_review_and_finalization_runbook.md、knowledge_adoption_delta_contract.md，以及 financial-analyzer/scripts/write_knowledge_adoption.py、rollback_knowledge_adoption.py、show_knowledge_adoption.py。当前聚焦 R2：知识采纳 delta 契约。请把章节级正式写入所需的 delta schema、审计键、回滚约束和校验规则落成仓库文档，并确保它能被后续 Codex 线程直接消费；不要改 Soul 结构，也不要重新引入 pending_updates 作为主学习路径。
 ```
 
-当前最稳的组合是：主线程先做 `W5`，并行增强轨再做 `W6.1`，最后才进入 `W7`。
+如果你要先做最小真实演练，建议开 `R3`：
+
+```text
+先阅读 AGENTS.md、automation_blueprint.md、codex_review_and_finalization_runbook.md、knowledge_adoption_delta_contract.md、financial-analyzer/SKILL.md，以及最近一次 P5 仿真结果。当前聚焦 R3：1-2 个完整案例的 scaffold -> review -> adopt -> formalization 演练。请选取最小但真实的案例，跑通章节复核、delta 生成、adoption log 写入、rollback 预案和正式产物收口，并把缺口写成可执行清单；不要扩到 10 案批量，也不要改回旧的 review bundle 主链路。
+```
+
+如果你已经完成 R1/R2/R3，下一步再开 `P6`：
+
+```text
+先阅读 AGENTS.md、automation_blueprint.md、production_execution_runbook.md，以及最近一次 R3 演练结果。当前聚焦生产化 P6：Go-Live Checklist。请基于现有系统的真实能力边界，整理一份正式投入使用前的 go-live checklist，至少覆盖 skill 安装校验、runtime 配置校验、registry 状态、批处理成功率门槛、人工抽检点、scaffold 与正式产物的交接边界、知识写入审核边界、失败重跑策略、回滚策略和“哪些问题出现时必须停止上线”。请把结果落成仓库文档。
+```
+
+当前最稳的组合是：主线程先做 `R1`，然后 `R2`，再做 `R3`，最后才进入 `P6`。

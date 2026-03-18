@@ -1,8 +1,10 @@
 {
-  "engine_version": "3.1.0",
+  "engine_version": "3.1.2",
   "status": "success",
   "failure_reason": "",
-  "generated_at": "2026-03-17T07:43:04",
+  "generated_at": "2026-03-18T14:40:16",
+  "script_output_mode": "scaffold_only",
+  "codex_review_required": true,
   "input": {
     "md_path": "/Users/yetim/project/financialanalysis/output/恒隆地产/恒隆地产2024年報/恒隆地产2024年報.md",
     "md5": "9d36cb9983a4afbe6f5f93f676adb46e",
@@ -40,16 +42,17 @@
   "artifacts": {
     "run_manifest": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_henglong/run_manifest.json",
     "chapter_records": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_henglong/chapter_records.jsonl",
-    "focus_list": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_henglong/focus_list.json",
+    "analysis_report_scaffold": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_henglong/analysis_report_scaffold.md",
+    "focus_list_scaffold": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_henglong/focus_list_scaffold.json",
+    "final_data_scaffold": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_henglong/final_data_scaffold.json",
+    "soul_export_payload_scaffold": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_henglong/soul_export_payload_scaffold.json",
+    "analysis_report": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_henglong/analysis_report.md",
     "final_data": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_henglong/final_data.json",
     "soul_export_payload": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_henglong/soul_export_payload.json",
-    "pending_updates": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_henglong/pending_updates.json",
-    "analysis_report": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_henglong/analysis_report.md",
     "financial_output": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_henglong/financial_output.xlsx"
   },
   "counts": {
     "chapter_records": 4,
-    "focus_items": 6,
-    "pending_updates": 9
+    "focus_items_scaffold": 6
   }
 }

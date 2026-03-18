@@ -1,39 +1,44 @@
 # Output Contract
 
-## 固定文件名
+## 模板脚本固定文件名
 
-运行目录内固定保留以下文件名：
+模板脚本成功态在运行目录内固定保留以下文件名：
 
 - `run_manifest.json`
 - `chapter_records.jsonl`
-- `focus_list.json`
+- `analysis_report_scaffold.md`
+- `focus_list_scaffold.json`
+- `final_data_scaffold.json`
+- `soul_export_payload_scaffold.json`
+
+## Codex 复核后的正式文件名
+
+完成逐章复核和最终汇总后，运行目录内正式交付文件名为：
+
+- `analysis_report.md`
 - `final_data.json`
 - `soul_export_payload.json`
-- `pending_updates.json`
-- `analysis_report.md`
 - `financial_output.xlsx`
 
 ## 导出规则
 
-- JSON 导出优先写稳定核心字段，再附加扩展字段。
-- `soul_export_payload.json` 是 W3 -> W4 的正式导出契约；`final_data.json` 保留为分析聚合产物，不再直接作为 Soul 输入。
-- Markdown 报告先给动态重点，再给章节速览与待固化更新。
-- `financial_output.xlsx` 由独立 Soul exporter 基于 `soul_export_payload.json` 生成；W3 不再直接拼装最终 Excel 结构。
-- Excel 只消费稳定核心字段和已识别扩展字段。
-- 遇到未知扩展字段时，允许忽略或降级展示，不能整体失败。
-- 所有正常产物都只基于附注章节生成。
+- 模板脚本输出的 scaffold 只能视为草稿，不能未经复核直接作为最终交付。
+- `soul_export_payload.json` 仍是 Soul Excel 导出层的正式稳定契约。
+- `financial_output.xlsx` 由独立 Soul exporter 基于正式 `soul_export_payload.json` 生成。
+- Excel 只消费稳定核心字段和已确认结构，不消费内部知识治理元数据。
+- 所有正常分析产物都只基于附注章节生成。
 
 ## 前向兼容
 
 - 新版读取旧记录时，允许字段缺失。
-- 旧版导出逻辑不应依赖新增扩展字段是否存在。
-- 新主题第一次出现时，优先进入 `pending_updates.json`，而不是强制改历史数据。
+- 旧版逻辑看到 scaffold 文件时，不应将其误认为正式分析完成。
+- 不再要求主链路生成 `pending_updates.json`。
 
 ## 失败契约
 
-如果缺少 `notes_workfile`、附注目录为空、边界无效，或 Soul 导出层失败：
+如果缺少 `notes_workfile`、附注目录为空、边界无效：
 
 1. 脚本非零退出。
 2. `run_manifest.json` 中必须带 `failure_reason`。
 3. 对于前置输入失败，可只生成失败态 `run_manifest.json`。
-4. 对于 `soul_export_failed`，允许保留已写出的 JSON/Markdown 产物用于排障，但不得写成功态 `run_manifest.json`。
+4. 失败时不得写成功态 scaffold 或正式交付文件。

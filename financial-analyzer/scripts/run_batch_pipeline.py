@@ -27,22 +27,22 @@ from runtime_support import (
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 ANALYZER_SCRIPT = SCRIPT_DIR / "financial_analyzer.py"
-KNOWLEDGE_MANAGER_SCRIPT = SCRIPT_DIR / "knowledge_manager.py"
 TASK_RESULT_LOG = "task_results.jsonl"
 FAILED_TASKS_FILE = "failed_tasks.json"
-PENDING_UPDATES_INDEX_FILE = "pending_updates_index.json"
+SCAFFOLD_INDEX_FILE = "scaffold_index.json"
 BATCH_MANIFEST_FILE = "batch_manifest.json"
-GOVERNANCE_REVIEW_DIRNAME = "governance_review"
 TASKS_DIRNAME = "tasks"
 TASK_LOG_NAME = "task.log"
 KNOWN_TASK_OUTPUTS = [
     "run_manifest.json",
     "chapter_records.jsonl",
-    "focus_list.json",
+    "analysis_report_scaffold.md",
+    "focus_list_scaffold.json",
+    "final_data_scaffold.json",
+    "soul_export_payload_scaffold.json",
+    "analysis_report.md",
     "final_data.json",
     "soul_export_payload.json",
-    "pending_updates.json",
-    "analysis_report.md",
     "financial_output.xlsx",
     "preview.pdf",
     TASK_LOG_NAME,
@@ -105,7 +105,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--resume", action="store_true", help="跳过已有成功结果的任务")
     parser.add_argument("--only-failed", action="store_true", help="仅复跑 failed_tasks.json 中记录的任务")
-    parser.add_argument("--build-review-bundle", action="store_true", help="对成功任务的 pending_updates 构建 W5 审核包")
+    parser.add_argument("--build-review-bundle", action="store_true", help="兼容旧参数；新模式下该参数只记录弃用提示")
     return parser.parse_args()
 
 
@@ -273,14 +273,13 @@ def build_command(task: Dict[str, Any]) -> List[str]:
     ]
 
 
-def summarize_pending_updates(path: Path) -> int:
-    if not path.exists():
-        return 0
-    payload = read_json(path)
-    items = payload.get("items")
-    if not isinstance(items, list):
-        return 0
-    return len(items)
+def summarize_scaffold_outputs(run_dir: Path) -> Dict[str, str]:
+    return {
+        "analysis_report_scaffold": str(run_dir / "analysis_report_scaffold.md") if (run_dir / "analysis_report_scaffold.md").exists() else "",
+        "focus_list_scaffold": str(run_dir / "focus_list_scaffold.json") if (run_dir / "focus_list_scaffold.json").exists() else "",
+        "final_data_scaffold": str(run_dir / "final_data_scaffold.json") if (run_dir / "final_data_scaffold.json").exists() else "",
+        "soul_export_payload_scaffold": str(run_dir / "soul_export_payload_scaffold.json") if (run_dir / "soul_export_payload_scaffold.json").exists() else "",
+    }
 
 
 def run_single_task(task: Dict[str, Any], *, project_root: Path) -> Dict[str, Any]:
@@ -303,8 +302,8 @@ def run_single_task(task: Dict[str, Any], *, project_root: Path) -> Dict[str, An
             "manifest_status": "",
             "notes_locator_status": "",
             "engine_version": "",
-            "pending_updates_path": "",
-            "pending_updates_count": 0,
+            "script_output_mode": "",
+            "codex_review_required": False,
             "started_at": started_at,
             "completed_at": completed_at,
             "task_log_path": "",
@@ -325,8 +324,8 @@ def run_single_task(task: Dict[str, Any], *, project_root: Path) -> Dict[str, An
             "manifest_status": "",
             "notes_locator_status": "",
             "engine_version": "",
-            "pending_updates_path": "",
-            "pending_updates_count": 0,
+            "script_output_mode": "",
+            "codex_review_required": False,
             "started_at": started_at,
             "completed_at": completed_at,
             "task_log_path": "",
@@ -347,20 +346,23 @@ def run_single_task(task: Dict[str, Any], *, project_root: Path) -> Dict[str, An
 
     manifest_path = run_dir / "run_manifest.json"
     manifest = read_json(manifest_path) if manifest_path.exists() else None
-    pending_updates_path = run_dir / "pending_updates.json"
-    pending_updates_count = summarize_pending_updates(pending_updates_path)
+    scaffold_outputs = summarize_scaffold_outputs(run_dir)
 
     status = "failed"
     failure_reason = "manifest_missing_after_process_exit"
     manifest_status = ""
     notes_locator_status = ""
     engine_version = ""
+    script_output_mode = ""
+    codex_review_required = False
 
     if manifest:
         manifest_status = str(manifest.get("status", ""))
         failure_reason = str(manifest.get("failure_reason", "")) or failure_reason
         notes_locator_status = str((manifest.get("notes_locator") or {}).get("status", ""))
         engine_version = str(manifest.get("engine_version", ""))
+        script_output_mode = str(manifest.get("script_output_mode", ""))
+        codex_review_required = bool(manifest.get("codex_review_required", False))
         if manifest_status == "success" and completed.returncode == 0:
             status = "success"
             failure_reason = ""
@@ -382,8 +384,8 @@ def run_single_task(task: Dict[str, Any], *, project_root: Path) -> Dict[str, An
         "manifest_status": manifest_status,
         "notes_locator_status": notes_locator_status,
         "engine_version": engine_version,
-        "pending_updates_path": str(pending_updates_path) if pending_updates_path.exists() else "",
-        "pending_updates_count": pending_updates_count,
+        "script_output_mode": script_output_mode,
+        "codex_review_required": codex_review_required,
         "started_at": started_at,
         "completed_at": completed_at,
         "task_log_path": str(log_path),
@@ -391,6 +393,7 @@ def run_single_task(task: Dict[str, Any], *, project_root: Path) -> Dict[str, An
         "tags": task.get("tags", []),
         "retry_group": task.get("retry_group", ""),
         "source_pdf": str(task.get("source_pdf", "")),
+        **scaffold_outputs,
     }
 
 
@@ -427,14 +430,14 @@ def build_failed_tasks_payload(
     }
 
 
-def build_pending_updates_index_payload(
+def build_scaffold_index_payload(
     batch_name: str,
     batch_run_dir: Path,
     latest_results: Dict[str, Dict[str, Any]],
 ) -> Dict[str, Any]:
     items = []
     for item in latest_results.values():
-        if item.get("status") != "success" or not item.get("pending_updates_path"):
+        if item.get("status") != "success":
             continue
         items.append(
             {
@@ -443,9 +446,13 @@ def build_pending_updates_index_payload(
                 "year": item["year"],
                 "case_name": item["task_id"],
                 "run_dir": item["run_dir"],
-                "pending_updates_path": item["pending_updates_path"],
-                "item_count": item["pending_updates_count"],
                 "engine_version": item["engine_version"],
+                "script_output_mode": item.get("script_output_mode", ""),
+                "codex_review_required": item.get("codex_review_required", False),
+                "analysis_report_scaffold": item.get("analysis_report_scaffold", ""),
+                "focus_list_scaffold": item.get("focus_list_scaffold", ""),
+                "final_data_scaffold": item.get("final_data_scaffold", ""),
+                "soul_export_payload_scaffold": item.get("soul_export_payload_scaffold", ""),
             }
         )
     items.sort(key=lambda item: item["task_id"])
@@ -466,81 +473,20 @@ def run_governance_review(
     runtime_config_path: Path,
     project_root: Path,
 ) -> Dict[str, Any]:
-    success_items = [
-        item
-        for item in latest_results.values()
-        if item.get("status") == "success" and item.get("pending_updates_path")
-    ]
-    success_items.sort(key=lambda item: item["task_id"])
-    governance_review_dir = batch_run_dir / GOVERNANCE_REVIEW_DIRNAME
-    governance_review_dir.mkdir(parents=True, exist_ok=True)
-
-    base_payload = {
+    success_count = sum(1 for item in latest_results.values() if item.get("status") == "success")
+    note = "deprecated_pending_updates_governance"
+    if build_review_bundle:
+        note = "build_review_bundle_ignored_in_scaffold_mode"
+    return {
         "batch_name": batch_name,
-        "success_task_count": len(success_items),
+        "success_task_count": success_count,
         "manual_review_required": False,
-        "governance_status": "not_built",
-        "governance_note": "",
+        "governance_status": "deprecated",
+        "governance_note": note,
         "review_bundle_path": "",
         "review_report_path": "",
         "build_log_path": "",
     }
-
-    if not success_items:
-        return base_payload
-
-    if not build_review_bundle:
-        base_payload["governance_status"] = "collected"
-        return base_payload
-
-    if len(success_items) < 3:
-        base_payload["governance_note"] = "insufficient_successful_cases_for_review_bundle"
-        return base_payload
-
-    build_log_path = governance_review_dir / "build_review_bundle.log"
-    command = [
-        sys.executable,
-        str(KNOWLEDGE_MANAGER_SCRIPT),
-        "--runtime-config",
-        str(runtime_config_path),
-        "build-review-bundle",
-        "--input",
-    ]
-    command.extend(item["pending_updates_path"] for item in success_items)
-    command.extend(["--output-dir", str(governance_review_dir)])
-
-    with open(build_log_path, "w", encoding="utf-8") as handle:
-        completed = subprocess.run(
-            command,
-            cwd=str(project_root),
-            stdout=handle,
-            stderr=subprocess.STDOUT,
-            text=True,
-        )
-
-    bundle_path = governance_review_dir / "knowledge_review_bundle.json"
-    report_path = governance_review_dir / "knowledge_review_report.md"
-    if completed.returncode == 0 and bundle_path.exists() and report_path.exists():
-        base_payload.update(
-            {
-                "manual_review_required": True,
-                "governance_status": "review_bundle_built",
-                "review_bundle_path": str(bundle_path),
-                "review_report_path": str(report_path),
-                "build_log_path": str(build_log_path),
-            }
-        )
-        return base_payload
-
-    base_payload.update(
-        {
-            "manual_review_required": True,
-            "governance_status": "manual_review_required",
-            "governance_note": "review_bundle_build_failed",
-            "build_log_path": str(build_log_path),
-        }
-    )
-    return base_payload
 
 
 def build_task_index(
@@ -566,8 +512,12 @@ def build_task_index(
                 "status": status,
                 "failure_reason": latest.get("failure_reason", ""),
                 "manifest_path": latest.get("manifest_path", ""),
-                "pending_updates_path": latest.get("pending_updates_path", ""),
-                "pending_updates_count": latest.get("pending_updates_count", 0),
+                "script_output_mode": latest.get("script_output_mode", ""),
+                "codex_review_required": latest.get("codex_review_required", False),
+                "analysis_report_scaffold": latest.get("analysis_report_scaffold", ""),
+                "focus_list_scaffold": latest.get("focus_list_scaffold", ""),
+                "final_data_scaffold": latest.get("final_data_scaffold", ""),
+                "soul_export_payload_scaffold": latest.get("soul_export_payload_scaffold", ""),
                 "registry_report_key": latest.get("registry_report_key", registry_context.get("report_key", "")),
                 "registry_decision": registry_decision,
                 "registry_needs_rerun": latest.get("registry_needs_rerun", registry_context.get("needs_rerun", True)),
@@ -677,7 +627,7 @@ def main():
     task_list = load_task_list(task_list_path, batch_run_dir)
     task_result_log_path = batch_run_dir / TASK_RESULT_LOG
     failed_tasks_path = batch_run_dir / FAILED_TASKS_FILE
-    pending_updates_index_path = batch_run_dir / PENDING_UPDATES_INDEX_FILE
+    scaffold_index_path = batch_run_dir / SCAFFOLD_INDEX_FILE
     batch_manifest_path = batch_run_dir / BATCH_MANIFEST_FILE
 
     previous_manifest = read_json(batch_manifest_path) if batch_manifest_path.exists() else {}
@@ -760,12 +710,12 @@ def main():
         append_jsonl(task_result_log_path, result)
         latest_results[result["task_id"]] = result
 
-    pending_updates_index = build_pending_updates_index_payload(
+    scaffold_index = build_scaffold_index_payload(
         task_list["batch_name"],
         batch_run_dir,
         latest_results,
     )
-    write_json(pending_updates_index_path, pending_updates_index)
+    write_json(scaffold_index_path, scaffold_index)
 
     failed_tasks_payload = build_failed_tasks_payload(
         task_list["batch_name"],
@@ -818,10 +768,8 @@ def main():
         f"pending={batch_manifest['summary']['pending_count']}"
     )
     print(f"[OK] failed_tasks: {failed_tasks_path}")
-    print(f"[OK] pending_updates_index: {pending_updates_index_path}")
-    if governance_payload["governance_status"] in {"review_bundle_built", "manual_review_required"}:
-        print(f"[OK] governance_status: {governance_payload['governance_status']}")
-    elif governance_payload["governance_note"]:
+    print(f"[OK] scaffold_index: {scaffold_index_path}")
+    if governance_payload["governance_note"]:
         print(f"[INFO] governance_note: {governance_payload['governance_note']}")
 
 

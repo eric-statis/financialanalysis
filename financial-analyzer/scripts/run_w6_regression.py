@@ -38,10 +38,22 @@ REQUIRED_PAYLOAD_KEYS = [
     "evidence_index",
 ]
 
-SUCCESS_OUTPUT_FILENAMES = [
+SCAFFOLD_OUTPUT_FILENAMES = [
+    "chapter_records.jsonl",
+    "analysis_report_scaffold.md",
+    "focus_list_scaffold.json",
+    "final_data_scaffold.json",
+    "soul_export_payload_scaffold.json",
+]
+
+FORMAL_OUTPUT_FILENAMES = [
     "analysis_report.md",
+    "final_data.json",
     "soul_export_payload.json",
     "financial_output.xlsx",
+]
+
+PREVIEW_OUTPUT_FILENAMES = [
     "preview.pdf",
 ]
 
@@ -175,12 +187,21 @@ def validate_success_manifest(run_dir):
     if manifest.get("status") != "success":
         errors.append(f"status 不是 success: {manifest.get('status')!r}")
 
+    details["script_output_mode"] = manifest.get("script_output_mode")
+    details["codex_review_required"] = manifest.get("codex_review_required")
+    if manifest.get("script_output_mode") != "scaffold_only":
+        errors.append(f"script_output_mode 不是 scaffold_only: {manifest.get('script_output_mode')!r}")
+    if manifest.get("codex_review_required") is not True:
+        errors.append("codex_review_required 不是 true")
+
     artifacts = manifest.get("artifacts") or {}
     required_artifacts = {
         "run_manifest": run_dir / "run_manifest.json",
-        "analysis_report": run_dir / "analysis_report.md",
-        "soul_export_payload": run_dir / "soul_export_payload.json",
-        "financial_output": run_dir / "financial_output.xlsx",
+        "chapter_records": run_dir / "chapter_records.jsonl",
+        "analysis_report_scaffold": run_dir / "analysis_report_scaffold.md",
+        "focus_list_scaffold": run_dir / "focus_list_scaffold.json",
+        "final_data_scaffold": run_dir / "final_data_scaffold.json",
+        "soul_export_payload_scaffold": run_dir / "soul_export_payload_scaffold.json",
     }
     artifact_details = {}
 
@@ -270,7 +291,7 @@ def validate_failure_manifest(run_dir, expected_failure_reason):
 
 
 def validate_analysis_report(run_dir):
-    report_path = run_dir / "analysis_report.md"
+    report_path = run_dir / "analysis_report_scaffold.md"
     errors = []
     details = {
         "path": str(report_path),
@@ -278,26 +299,29 @@ def validate_analysis_report(run_dir):
     }
 
     if not report_path.exists():
-        errors.append("analysis_report.md 未生成")
+        errors.append("analysis_report_scaffold.md 未生成")
         return make_check("analysis_report", False, details, errors)
 
     content = read_text(report_path)
     details["size_bytes"] = report_path.stat().st_size
     details["contains_run_overview"] = "运行概览" in content
     details["contains_dynamic_focus"] = "动态重点" in content
+    details["contains_codex_checklist"] = "Codex 复核清单" in content
 
     if not content.strip():
-        errors.append("analysis_report.md 为空")
+        errors.append("analysis_report_scaffold.md 为空")
     if not details["contains_run_overview"]:
-        errors.append("analysis_report.md 缺少“运行概览”")
+        errors.append("analysis_report_scaffold.md 缺少“运行概览”")
     if not details["contains_dynamic_focus"]:
-        errors.append("analysis_report.md 缺少“动态重点”")
+        errors.append("analysis_report_scaffold.md 缺少“脚本初步重点/动态重点”")
+    if not details["contains_codex_checklist"]:
+        errors.append("analysis_report_scaffold.md 缺少“Codex 复核清单”")
 
-    return make_check("analysis_report", not errors, details, errors)
+    return make_check("analysis_report_scaffold", not errors, details, errors)
 
 
 def validate_payload(run_dir):
-    payload_path = run_dir / "soul_export_payload.json"
+    payload_path = run_dir / "soul_export_payload_scaffold.json"
     errors = []
     details = {
         "path": str(payload_path),
@@ -306,7 +330,7 @@ def validate_payload(run_dir):
     payload = None
 
     if not payload_path.exists():
-        errors.append("soul_export_payload.json 未生成")
+        errors.append("soul_export_payload_scaffold.json 未生成")
         return make_check("soul_export_payload", False, details, errors), payload
 
     payload = read_json(payload_path)
@@ -328,120 +352,32 @@ def validate_payload(run_dir):
     if not payload.get("module_manifest"):
         errors.append("module_manifest 为空")
 
-    return make_check("soul_export_payload", not errors, details, errors), payload
+    return make_check("soul_export_payload_scaffold", not errors, details, errors), payload
 
-
-def validate_workbook(run_dir, payload):
-    workbook_path = run_dir / "financial_output.xlsx"
+def validate_scaffold_outputs_present(run_dir):
     errors = []
-    details = {
-        "path": str(workbook_path),
-        "exists": workbook_path.exists(),
-        "sheetnames": [],
-        "missing_core_sheets": [],
-        "missing_enabled_optional_sheets": [],
-    }
-
-    if not workbook_path.exists():
-        errors.append("financial_output.xlsx 未生成")
-        return make_check("financial_output", False, details, errors)
-
-    workbook = load_workbook(workbook_path, read_only=True, data_only=True)
-    try:
-        details["sheetnames"] = list(workbook.sheetnames)
-    finally:
-        workbook.close()
-
-    details["missing_core_sheets"] = [
-        sheet_name for sheet_name in CORE_SHEETS if sheet_name not in details["sheetnames"]
-    ]
-    enabled_optional_sheets = []
-    if payload:
-        for item in payload.get("module_manifest") or []:
-            sheet_name = item.get("sheet_name")
-            if item.get("enabled") and sheet_name and sheet_name not in CORE_SHEETS:
-                enabled_optional_sheets.append(sheet_name)
-
-    details["enabled_optional_sheets"] = enabled_optional_sheets
-    details["missing_enabled_optional_sheets"] = [
-        sheet_name for sheet_name in enabled_optional_sheets if sheet_name not in details["sheetnames"]
-    ]
-
-    if details["missing_core_sheets"]:
-        errors.append(f"缺少核心 Sheet: {', '.join(details['missing_core_sheets'])}")
-    if details["missing_enabled_optional_sheets"]:
-        errors.append(
-            "缺少已启用可选 Sheet: "
-            + ", ".join(details["missing_enabled_optional_sheets"])
-        )
-
-    return make_check("financial_output", not errors, details, errors)
-
-
-def read_png_size(path):
-    with open(path, "rb") as handle:
-        header = handle.read(24)
-
-    png_signature = b"\x89PNG\r\n\x1a\n"
-    if len(header) < 24 or header[:8] != png_signature:
-        raise ValueError(f"不是有效 PNG 文件: {path}")
-
-    width = int.from_bytes(header[16:20], byteorder="big")
-    height = int.from_bytes(header[20:24], byteorder="big")
-    return width, height
-
-
-def validate_preview(run_dir):
-    errors = []
-    preview_pdf_path = run_dir / "preview.pdf"
-    png_paths = sorted(run_dir.glob("preview-*.png"))
-    details = {
-        "preview_pdf_path": str(preview_pdf_path),
-        "preview_pdf_exists": preview_pdf_path.exists(),
-        "png_count": len(png_paths),
-        "png_files": [path.name for path in png_paths],
-        "png_sizes": {},
-    }
-
-    if not preview_pdf_path.exists():
-        errors.append("preview.pdf 未生成")
-
-    if not png_paths:
-        errors.append("preview-*.png 未生成")
-        return make_check("workbook_preview", False, details, errors)
-
-    expected_names = [f"preview-{index:02d}.png" for index in range(1, len(png_paths) + 1)]
-    actual_names = [path.name for path in png_paths]
-    details["expected_png_files"] = expected_names
-    if actual_names != expected_names:
-        errors.append("preview PNG 文件名不是从 01 开始连续编号")
-
-    unique_sizes = set()
-    for path in png_paths:
-        try:
-            size = read_png_size(path)
-        except ValueError as exc:
-            errors.append(str(exc))
-            continue
-        details["png_sizes"][path.name] = {
-            "width": size[0],
-            "height": size[1],
+    details = {"checked_paths": {}}
+    for filename in SCAFFOLD_OUTPUT_FILENAMES:
+        path = run_dir / filename
+        exists = path.exists()
+        size = path.stat().st_size if exists else 0
+        details["checked_paths"][filename] = {
+            "path": str(path),
+            "exists": exists,
+            "size_bytes": size,
         }
-        unique_sizes.add(size)
+        if not exists:
+            errors.append(f"成功态缺少 scaffold 文件: {filename}")
+        elif size == 0:
+            errors.append(f"成功态 scaffold 文件为空: {filename}")
+    return make_check("scaffold_outputs_present", not errors, details, errors)
 
-    if len(unique_sizes) > 1:
-        errors.append("preview PNG 尺寸不一致")
 
-    return make_check("workbook_preview", not errors, details, errors)
-
-
-def validate_failure_outputs_absent(run_dir):
+def validate_formal_outputs_absent(run_dir):
     errors = []
-    details = {
-        "checked_paths": {},
-    }
-
-    for filename in SUCCESS_OUTPUT_FILENAMES:
+    details = {"checked_paths": {}}
+    all_absent = FORMAL_OUTPUT_FILENAMES + PREVIEW_OUTPUT_FILENAMES
+    for filename in all_absent:
         path = run_dir / filename
         exists = path.exists()
         details["checked_paths"][filename] = {
@@ -449,7 +385,30 @@ def validate_failure_outputs_absent(run_dir):
             "exists": exists,
         }
         if exists:
-            errors.append(f"失败态不应生成 {filename}")
+            errors.append(f"模板脚本不应生成正式产物: {filename}")
+
+    preview_pngs = sorted(run_dir.glob("preview-*.png"))
+    details["preview_png_count"] = len(preview_pngs)
+    details["preview_png_files"] = [path.name for path in preview_pngs]
+    if preview_pngs:
+        errors.append("模板脚本不应生成 preview-*.png")
+
+    return make_check("formal_outputs_absent", not errors, details, errors)
+
+
+def validate_failure_outputs_absent(run_dir):
+    errors = []
+    details = {"checked_paths": {}}
+    all_absent = SCAFFOLD_OUTPUT_FILENAMES + FORMAL_OUTPUT_FILENAMES + PREVIEW_OUTPUT_FILENAMES
+    for filename in all_absent:
+        path = run_dir / filename
+        exists = path.exists()
+        details["checked_paths"][filename] = {
+            "path": str(path),
+            "exists": exists,
+        }
+        if exists:
+            errors.append(f"失败态不应生成任何成功态产物: {filename}")
 
     preview_pngs = sorted(run_dir.glob("preview-*.png"))
     details["preview_png_count"] = len(preview_pngs)
@@ -594,11 +553,11 @@ def run_case(case_id, case_config):
     evaluations = []
     if case_config["expected_outcome"] == "success":
         manifest_check, manifest = validate_success_manifest(run_dir)
+        scaffold_check = validate_scaffold_outputs_present(run_dir)
         report_check = validate_analysis_report(run_dir)
         payload_check, payload = validate_payload(run_dir)
-        workbook_check = validate_workbook(run_dir, payload)
-        preview_check = validate_preview(run_dir)
-        checks = [manifest_check, report_check, payload_check, workbook_check, preview_check]
+        formal_absent_check = validate_formal_outputs_absent(run_dir)
+        checks = [manifest_check, scaffold_check, report_check, payload_check, formal_absent_check]
         if payload is not None:
             evaluations.append(
                 evaluate_golden(
@@ -621,8 +580,9 @@ def run_case(case_id, case_config):
             run_dir,
             case_config["expected_failure_reason"],
         )
-        absent_check = validate_failure_outputs_absent(run_dir)
-        checks = [manifest_check, absent_check]
+        absent_check = validate_formal_outputs_absent(run_dir)
+        scaffold_absent_check = validate_failure_outputs_absent(run_dir)
+        checks = [manifest_check, absent_check, scaffold_absent_check]
         if manifest is not None:
             evaluations.append(
                 evaluate_golden(
@@ -730,7 +690,7 @@ def collect_known_gaps():
                 "id": "mixed_legacy_and_soul_workbooks",
                 "category": "observed_repo_state",
                 "title": "历史目录同时存在旧内部 workbook 与新 Soul workbook",
-                "detail": "W6 只认当前脚本重跑后的 financial_output.xlsx，不直接以历史目录判定通过。",
+                "detail": "历史目录仍混有旧 workbook 样本；当前 W6 已切换为 scaffold-only，不再用旧 workbook 作为模板脚本成功依据。",
                 "evidence": [
                     {
                         "path": str(legacy_workbook),
@@ -749,7 +709,7 @@ def collect_known_gaps():
             "id": "workbook_cell_level_golden_deferred",
             "category": "known_scope_boundary",
             "title": "Workbook 单元格级 golden diff 仍暂缓",
-            "detail": "当前 W6.1 仅冻结 payload/manifest 子集；`w6_country_garden` 的 `01_kpi_dashboard` 仍存在 XML 值兼容性问题，暂不做整本或逐单元格 golden。",
+            "detail": "当前 W6.1 仅冻结 scaffold 产物和受控 payload 子集；逐单元格 workbook golden 已移出模板脚本门禁，留待正式导出层或单独 QA 轨。",
             "evidence": [
                 {
                     "path": str(country_garden_workbook),
@@ -762,8 +722,8 @@ def collect_known_gaps():
     gaps.append({
         "id": "preview_layout_semantics_not_covered",
         "category": "known_scope_boundary",
-        "title": "当前预览检查只覆盖结构，不覆盖版式语义",
-        "detail": "W6.1 只校验 preview 产物存在性、连续编号和尺寸一致性，不判断分页质量、内容遮挡或视觉美观。",
+        "title": "模板脚本不再把 preview 作为主门禁",
+        "detail": "当前模板脚本只负责 scaffold 产物；preview.pdf / preview-*.png 已从 W6 成功态门禁中移出，不再作为模板脚本验收项。",
         "evidence": [],
     })
 
@@ -859,8 +819,9 @@ def render_report(results_payload):
         "",
         "## 验证范围",
         "",
-        "- 固定 3 个成功案例重跑 `financial_analyzer.py`，并验证 `run_manifest.json`、`analysis_report.md`、`soul_export_payload.json`、`financial_output.xlsx`、`preview.pdf`、`preview-*.png`。",
-        "- 固定 2 个失败案例重跑 `financial_analyzer.py`，并验证失败态 `run_manifest.json`、失败原因和成功态产物缺失。",
+        "- 固定 3 个成功案例重跑 `financial_analyzer.py`，并验证 `run_manifest.json`、`chapter_records.jsonl`、`analysis_report_scaffold.md`、`focus_list_scaffold.json`、`final_data_scaffold.json`、`soul_export_payload_scaffold.json`。",
+        "- 固定 3 个成功案例还需确认 `analysis_report.md`、`final_data.json`、`soul_export_payload.json`、`financial_output.xlsx`、`preview.pdf`、`preview-*.png` 均未生成。",
+        "- 固定 2 个失败案例重跑 `financial_analyzer.py`，并验证失败态 `run_manifest.json`、失败原因和所有 scaffold / 正式产物缺失。",
         "- Golden diff 仅评估受控 payload/manifest 子集，不把 diff 作为退出码门禁。",
         "- 不把历史 `test_runs` 目录作为通过依据。",
         "",

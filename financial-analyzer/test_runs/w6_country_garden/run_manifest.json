@@ -1,8 +1,10 @@
 {
-  "engine_version": "3.1.0",
+  "engine_version": "3.1.2",
   "status": "success",
   "failure_reason": "",
-  "generated_at": "2026-03-17T07:43:10",
+  "generated_at": "2026-03-18T14:40:16",
+  "script_output_mode": "scaffold_only",
+  "codex_review_required": true,
   "input": {
     "md_path": "/Users/yetim/project/financialanalysis/cases/碧桂园2024年年报分析.md",
     "md5": "b2d539044b3b3f0c00b88f82a6be1438",
@@ -40,16 +42,17 @@
   "artifacts": {
     "run_manifest": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_country_garden/run_manifest.json",
     "chapter_records": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_country_garden/chapter_records.jsonl",
-    "focus_list": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_country_garden/focus_list.json",
+    "analysis_report_scaffold": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_country_garden/analysis_report_scaffold.md",
+    "focus_list_scaffold": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_country_garden/focus_list_scaffold.json",
+    "final_data_scaffold": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_country_garden/final_data_scaffold.json",
+    "soul_export_payload_scaffold": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_country_garden/soul_export_payload_scaffold.json",
+    "analysis_report": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_country_garden/analysis_report.md",
     "final_data": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_country_garden/final_data.json",
     "soul_export_payload": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_country_garden/soul_export_payload.json",
-    "pending_updates": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_country_garden/pending_updates.json",
-    "analysis_report": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_country_garden/analysis_report.md",
     "financial_output": "/Users/yetim/project/financialanalysis/financial-analyzer/test_runs/w6_country_garden/financial_output.xlsx"
   },
   "counts": {
     "chapter_records": 31,
-    "focus_items": 6,
-    "pending_updates": 12
+    "focus_items_scaffold": 6
   }
 }

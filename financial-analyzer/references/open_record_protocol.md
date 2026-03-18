@@ -2,7 +2,10 @@
 
 ## 目标
 
-用稳定外壳承载每次运行的核心产物，同时允许章节、主题、字段和规则通过扩展载荷持续增长。
+用稳定外壳承载每次运行的核心产物，同时明确区分：
+
+- 模板脚本生成的结构化初稿
+- Codex 复核后的正式分析与知识沉淀
 
 ## 章节记录
 
@@ -31,24 +34,20 @@
 
 读取旧记录时，只依赖固定核心字段；扩展字段缺失不能导致失败。
 
-## 重点列表
+## 模板脚本 scaffold
 
-`focus_list.json` 固定核心字段如下：
+模板脚本允许输出以下 scaffold：
 
-- `focus_name`
-- `why_selected`
-- `evidence_chapters`
+- `analysis_report_scaffold.md`
+- `focus_list_scaffold.json`
+- `final_data_scaffold.json`
+- `soul_export_payload_scaffold.json`
 
-扩展字段如下：
-
-- `focus_attributes`
-- `related_topics`
-- `knowledge_gap`
-- `impact_scope`
+这些 scaffold 只代表“脚本初稿”，必须经过 Codex 复核后才能升级为正式交付。
 
 ## 最终数据
 
-`final_data.json` 固定核心字段如下：
+正式 `final_data.json` 固定核心字段如下：
 
 - `entity_profile`
 - `key_conclusions`
@@ -58,7 +57,7 @@
 
 ## Soul 导出契约
 
-`soul_export_payload.json` 是面向 Soul Excel 导出层的稳定接口，固定核心字段如下：
+正式 `soul_export_payload.json` 是面向 Soul Excel 导出层的稳定接口，固定核心字段如下：
 
 - `contract_version`
 - `template_version`
@@ -78,28 +77,38 @@
 
 - 固定骨架模块必须始终存在，即使字段值为空。
 - 所有可追溯字段只能通过 `evidence_refs` 关联 `evidence_index`。
-- `pending_updates.json`、知识候选、内部治理元数据不得进入该契约。
+- 内部知识写入日志、adoption log、运行态审计信息不得进入该契约。
 
 ## 运行清单
 
-`run_manifest.json` 需要显式记录附注工作流结果：
+`run_manifest.json` 需要显式记录模板脚本结果：
 
 - `status`
 - `failure_reason`
 - `notes_locator`
 - `notes_catalog_summary`
+- `script_output_mode`
+- `codex_review_required`
 
-失败时只写失败态 `run_manifest.json`，不写正常分析产物。
+成功态默认要求：
 
-## 待固化更新
+- `script_output_mode=scaffold_only`
+- `codex_review_required=true`
 
-`pending_updates.json` 只记录候选项，不直接污染正式知识库。每项必须带以下元数据：
+## 正式知识写入
 
-- `source`
-- `evidence`
-- `applicable_scope`
-- `status`
-- `introduced_in`
-- `confidence`
+正式知识写入不再通过 `pending_updates.json` 主导，而是通过：
 
-缺失元数据的候选项只能视为临时笔记，不能升级为正式能力。
+- `runtime/knowledge/knowledge_base.json`
+- `runtime/knowledge/adoption_logs/`
+
+章节级复核、写入前后的结构化 delta，以及回滚约束的正式口径见 [knowledge_adoption_delta_contract.md](/Users/yetim/project/financialanalysis/knowledge_adoption_delta_contract.md)。
+
+每次章节级知识写入至少需要：
+
+- 写入来源 case / chapter
+- before/after hash
+- 结构化 delta
+- 时间戳
+
+缺少 adoption log 的知识写入视为非法实现。

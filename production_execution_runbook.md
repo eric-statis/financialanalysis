@@ -26,13 +26,15 @@
 | 3 | 执行线程 | 让已安装 skill 绑定外部 runtime | skill/runtime 绑定方案与代码落地 |
 | 4 | 执行线程 | 定义“自动找 10 份财报”的测试入口 | 选样规则、来源记录、任务清单生成方式 |
 | 5 | 执行线程 | 做冷启动全真生产仿真 | 一次完整批次运行与结果汇总 |
-| 6 | 执行线程 | 形成 go-live checklist | 上线门禁、人工复核点、回滚方案 |
+| 6 | 执行线程 | 复核与直写收口 | 章节状态机、delta 契约、adoption log、rollback guard |
+| 7 | 执行线程 | 形成 go-live checklist | 上线门禁、人工复核点、回滚方案 |
 
 说明：
 
 - 第 1 到第 3 步决定系统是否可持续运行，优先级高于全真测试。
 - 第 4 步不是人工挑报告，而是让 Codex 按目标和规则生成测试样本集。
 - 第 5 步要求尽量接近真实生产，而不是复用当前会话里的隐式上下文。
+- 第 6 步负责把 scaffold-only 口径下的章节复核、直写、回滚与最终收口固定下来，再进入上线清单。
 
 ## 3.1 当前建议的 Skill 安装基线
 
@@ -279,10 +281,46 @@
 ### 可直接复制的 Prompt
 
 ```text
-先阅读 AGENTS.md、automation_blueprint.md、codex_execution_runbook.md、production_execution_runbook.md、runtime_external_data_layer_spec.md，以及已落地的 runtime/registry/skill 绑定方案。当前聚焦生产化 P5：冷启动全真生产仿真。请按“尽量接近真实生产”的原则，从已安装 skill 和项目内 runtime 出发，完成一次完整仿真：检查 skill 安装状态、检查 runtime 配置、使用自动选样得到的 10 份财报任务清单、执行批处理、输出 batch_manifest/failed_tasks/pending_updates_index/governance review，并给出最终成功率、主要失败点和是否达到 go-live 前门槛。不要只做静态审查。
+先阅读 AGENTS.md、automation_blueprint.md、codex_execution_runbook.md、production_execution_runbook.md、runtime_external_data_layer_spec.md，以及已落地的 runtime/registry/skill 绑定方案。当前聚焦生产化 P5：冷启动全真生产仿真。请按“尽量接近真实生产”的原则，从已安装 skill 和项目内 runtime 出发，完成一次完整仿真：检查 skill 安装状态、检查 runtime 配置、使用自动选样得到的 10 份财报任务清单、执行批处理、输出 batch_manifest/failed_tasks/scaffold_index，并确认各案例只生成 scaffold 产物、正式交付产物缺失以及知识写入需要后续 Codex 复核。不要只做静态审查。
 ```
 
-## 5.6 线程 P6：Go-Live Checklist
+## 5.6 线程 P5R：复核与直写收口
+
+### 目标
+
+- 把 scaffold-only 口径下的章节复核、知识直写、回滚预案和最终收口固定成可复用流程。
+
+### 开始前阅读
+
+- `AGENTS.md`
+- `automation_blueprint.md`
+- `codex_review_and_finalization_runbook.md`
+- `knowledge_adoption_delta_contract.md`
+- `financial-analyzer/SKILL.md`
+- `financial-analyzer/references/output_contract.md`
+- `financial-analyzer/references/open_record_protocol.md`
+- 最近一次 P5 冷启动全真生产仿真结果
+
+### 交付物
+
+- 章节状态机或状态清单
+- adoption gate / finalization gate 说明
+- 章节级 delta 契约的实施确认
+- rollback guard 与正式收口说明
+
+### 本线程不做
+
+- 不重新设计 runtime 目录骨架
+- 不回到 `pending_updates` 主路径
+- 不直接开始 go-live checklist
+
+### 可直接复制的 Prompt
+
+```text
+先阅读 AGENTS.md、automation_blueprint.md、codex_review_and_finalization_runbook.md、knowledge_adoption_delta_contract.md、financial-analyzer/SKILL.md、financial-analyzer/references/output_contract.md、financial-analyzer/references/open_record_protocol.md，以及最近一次 P5 冷启动全真生产仿真的结果。当前聚焦生产化 P5R：复核与直写收口。请基于 scaffold-only 口径，补齐章节状态机、adoption gate、finalization gate、delta 契约实施确认、rollback guard 和正式收口说明；不要重新设计 runtime 目录，也不要回到 pending_updates 主路径，更不要直接进入 go-live checklist。
+```
+
+## 5.7 线程 P6：Go-Live Checklist
 
 ### 目标
 
@@ -304,7 +342,7 @@
 ### 可直接复制的 Prompt
 
 ```text
-先阅读 AGENTS.md、automation_blueprint.md、production_execution_runbook.md，以及最近一次冷启动全真生产仿真的结果。当前聚焦生产化 P6：Go-Live Checklist。请基于现有系统的真实能力边界，整理一份正式投入使用前的 go-live checklist，至少覆盖 skill 安装校验、runtime 配置校验、registry 状态、批处理成功率门槛、人工抽检点、pending_updates 审核边界、失败重跑策略、回滚策略和“哪些问题出现时必须停止上线”。请把结果落成仓库文档。
+先阅读 AGENTS.md、automation_blueprint.md、production_execution_runbook.md，以及最近一次 P5R 复核与直写收口结果。当前聚焦生产化 P6：Go-Live Checklist。请基于现有系统的真实能力边界，整理一份正式投入使用前的 go-live checklist，至少覆盖 skill 安装校验、runtime 配置校验、registry 状态、批处理成功率门槛、人工抽检点、scaffold 与正式产物的交接边界、知识写入审核边界、失败重跑策略、回滚策略和“哪些问题出现时必须停止上线”。请把结果落成仓库文档。
 ```
 
 ## 6. 你接下来怎么开对话
@@ -316,11 +354,14 @@
 3. 然后开 P3
 4. 再开 P4
 5. 之后开 P5
-6. 最后开 P6
+6. 再开 P5R
+7. 最后开 P6
 
 如果你只想先开一个最关键的新对话，就先开 P1。
 
 如果你已经完成 P1-P3，想直接进入生产仿真，就先开 P4。
+
+如果你已经完成 P5，想把正式知识复核与直写收口补齐，就先开 P5R。
 
 ## 7. 总控线程怎么用
 

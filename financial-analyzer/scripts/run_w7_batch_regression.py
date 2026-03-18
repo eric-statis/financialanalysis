@@ -95,12 +95,12 @@ def scenario_command(config: Dict[str, Any], extra_flags: List[str] = None) -> L
 def validate_manifest(batch_run_dir: Path, expected_summary: Dict[str, int], expected_governance_status: str) -> List[Dict[str, Any]]:
     checks = []
     manifest_path = batch_run_dir / "batch_manifest.json"
-    pending_index_path = batch_run_dir / "pending_updates_index.json"
+    scaffold_index_path = batch_run_dir / "scaffold_index.json"
     failed_tasks_path = batch_run_dir / "failed_tasks.json"
     errors = []
     details = {
         "manifest_exists": manifest_path.exists(),
-        "pending_updates_index_exists": pending_index_path.exists(),
+        "scaffold_index_exists": scaffold_index_path.exists(),
         "failed_tasks_exists": failed_tasks_path.exists(),
     }
     if not manifest_path.exists():
@@ -120,21 +120,21 @@ def validate_manifest(batch_run_dir: Path, expected_summary: Dict[str, int], exp
         )
     checks.append(make_check("batch_manifest", not errors, details, errors))
 
-    if pending_index_path.exists():
-        pending_index = read_json(pending_index_path)
+    if scaffold_index_path.exists():
+        scaffold_index = read_json(scaffold_index_path)
         checks.append(
             make_check(
-                "pending_updates_index",
+                "scaffold_index",
                 True,
                 {
-                    "success_task_count": pending_index.get("success_task_count"),
-                    "item_count": len(pending_index.get("items", [])),
+                    "success_task_count": scaffold_index.get("success_task_count"),
+                    "item_count": len(scaffold_index.get("items", [])),
                 },
                 [],
             )
         )
     else:
-        checks.append(make_check("pending_updates_index", False, details, ["pending_updates_index.json 未生成"]))
+        checks.append(make_check("scaffold_index", False, details, ["scaffold_index.json 未生成"]))
 
     if failed_tasks_path.exists():
         failed_payload = read_json(failed_tasks_path)
@@ -210,25 +210,25 @@ def main():
     mixed_checks = validate_manifest(
         SCENARIOS["mixed"]["batch_run_dir"],
         {"task_count": 5, "success_count": 3, "failed_count": 2, "pending_count": 0},
-        "review_bundle_built",
+        "deprecated",
     )
-    mixed_checks.append(validate_governance_artifacts(SCENARIOS["mixed"]["batch_run_dir"], should_exist=True))
+    mixed_checks.append(validate_governance_artifacts(SCENARIOS["mixed"]["batch_run_dir"], should_exist=False))
     results.append({"scenario": mixed_run, "checks": mixed_checks})
 
     success_run = run_scenario("success_initial", SCENARIOS["success"])
     success_checks = validate_manifest(
         SCENARIOS["success"]["batch_run_dir"],
         {"task_count": 3, "success_count": 3, "failed_count": 0, "pending_count": 0},
-        "review_bundle_built",
+        "deprecated",
     )
-    success_checks.append(validate_governance_artifacts(SCENARIOS["success"]["batch_run_dir"], should_exist=True))
+    success_checks.append(validate_governance_artifacts(SCENARIOS["success"]["batch_run_dir"], should_exist=False))
     results.append({"scenario": success_run, "checks": success_checks})
 
     pair_run = run_scenario("pair_initial", SCENARIOS["pair"])
     pair_checks = validate_manifest(
         SCENARIOS["pair"]["batch_run_dir"],
         {"task_count": 2, "success_count": 2, "failed_count": 0, "pending_count": 0},
-        "not_built",
+        "deprecated",
     )
     pair_checks.append(validate_governance_artifacts(SCENARIOS["pair"]["batch_run_dir"], should_exist=False))
     results.append({"scenario": pair_run, "checks": pair_checks})

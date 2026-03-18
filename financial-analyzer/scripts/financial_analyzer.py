@@ -12,9 +12,6 @@ import re
 import sys
 from pathlib import Path
 
-from soul_exporter import export_payload_to_workbook
-
-
 if sys.platform == "win32":
     try:
         sys.stdout.reconfigure(encoding="utf-8")
@@ -23,7 +20,7 @@ if sys.platform == "win32":
         pass
 
 
-ENGINE_VERSION = "3.1.0"
+ENGINE_VERSION = "3.1.2"
 
 TOPIC_PATTERNS = {
     "audit": ["核数师", "审计", "审计意见", "保留意见", "无法表示意见", "否定意见"],
@@ -67,6 +64,92 @@ STOPWORDS = {
     "项",
     "表",
 }
+
+GENERIC_PENDING_TOPIC_TITLES = {
+    "general",
+    "事项描述",
+    "审计应对",
+    "公司概况",
+    "会计期间",
+    "会计年度",
+    "营业周期",
+    "编制基础",
+    "记账本位币",
+    "财务报告的批准报出",
+    "合并财务报表的编制方法",
+    "企业合并",
+    "收入与成本",
+    "研发投入",
+    "遵循企业会计准则的声明",
+    "合并资产负债表",
+    "母公司资产负债表",
+    "合并利润表",
+    "母公司利润表",
+    "合并现金流量表",
+    "母公司现金流量表",
+    "合并所有者权益变动表",
+    "母公司所有者权益变动表",
+}
+
+GENERIC_PENDING_TOPIC_MARKERS = (
+    "会计",
+    "编制基础",
+    "本位币",
+    "财务报告",
+    "财务报表",
+    "企业合并",
+    "营业周期",
+    "批准报出",
+    "合并财务报表",
+    "母公司",
+    "情况如下",
+    "确定标准",
+    "选择依据",
+    "折算",
+    "控制的判断",
+    "认定和分类",
+    "固定资产",
+    "金融工具",
+    "金融资产投资",
+    "长期股权投资",
+    "现金及现金等价物",
+    "现金流",
+    "总体情况",
+)
+
+PENDING_TOPIC_ALLOWLIST = {
+    "持续经营",
+}
+
+PENDING_TOPIC_INTEREST_MARKERS = (
+    "关联交易",
+    "收购",
+    "出售",
+    "重分类",
+    "租赁",
+    "托管",
+    "承包",
+    "担保",
+    "违约",
+    "诉讼",
+    "仲裁",
+    "持续经营",
+    "公允价值",
+    "业绩约定",
+)
+
+PENDING_FIELD_NOISE_MARKERS = (
+    "期末余额",
+    "期初余额",
+    "流动资产",
+    "流动负债",
+    "资产总计",
+    "负债合计",
+    "所有者权益合计",
+    "负债和所有者权益总计",
+    "财务报表附注",
+    "管理层",
+)
 
 SEVERITY_SCORE = {
     "extreme": 100,
@@ -389,11 +472,24 @@ def extract_numeric_data(text, limit=12):
 
 def extract_title_tokens(title):
     tokens = []
-    for token in re.findall(r"[A-Za-z]{2,}|[\u4e00-\u9fff]{2,12}", title):
-        candidate = token.strip()
+    normalized_title = re.sub(r"^[#\s]*\d+\s*[、.．)\-]?\s*", "", str(title or ""))
+    normalized_title = re.sub(r"[（(][^）)]*[）)]", " ", normalized_title)
+    normalized_title = re.sub(r"[，,；;：:、/\\|《》<>【】\[\]\"'“”‘’]", " ", normalized_title)
+    normalized_title = re.sub(r"\s+", " ", normalized_title).strip()
+
+    for token in normalized_title.split(" "):
+        candidate = token.strip(" -_.")
+        if re.fullmatch(r"[A-Za-z]{2,}", candidate):
+            pass
+        elif re.fullmatch(r"[\u4e00-\u9fff]{2,24}", candidate):
+            pass
+        else:
+            continue
         if candidate in STOPWORDS:
             continue
         if candidate.startswith("财务报表"):
+            continue
+        if len(candidate) > 16 and re.search(r"[\u4e00-\u9fff]", candidate):
             continue
         if candidate not in tokens:
             tokens.append(candidate)
@@ -840,10 +936,9 @@ def build_soul_export_payload(report_context, notes_work, run_dir, final_data, f
     source_artifacts = {
         "run_manifest": str(run_dir / "run_manifest.json"),
         "chapter_records": str(run_dir / "chapter_records.jsonl"),
-        "focus_list": str(run_dir / "focus_list.json"),
-        "final_data": str(run_dir / "final_data.json"),
-        "analysis_report": str(run_dir / "analysis_report.md"),
-        "financial_output": str(run_dir / "financial_output.xlsx"),
+        "focus_list_scaffold": str(run_dir / "focus_list_scaffold.json"),
+        "final_data_scaffold": str(run_dir / "final_data_scaffold.json"),
+        "analysis_report_scaffold": str(run_dir / "analysis_report_scaffold.md"),
         "notes_workfile": notes_work["path"],
     }
 
@@ -1694,52 +1789,66 @@ def report_scope_hint(topic_tags):
     return "适用于案例相近的完整年报分析"
 
 
+def normalize_pending_title(title):
+    return re.sub(r"\s+", " ", str(title or "").strip())
+
+
+def is_generic_pending_topic(title):
+    normalized = normalize_pending_title(title)
+    if not normalized:
+        return True
+    if normalized in PENDING_TOPIC_ALLOWLIST:
+        return False
+    if normalized in GENERIC_PENDING_TOPIC_TITLES:
+        return True
+    if any(marker in normalized for marker in GENERIC_PENDING_TOPIC_MARKERS):
+        return True
+    if normalized.endswith(("事项", "情况")) and len(normalized) >= 6:
+        return True
+    if normalized.endswith(("资产", "负债", "收益", "工具", "项目", "定义", "方法")):
+        return True
+    if normalized.startswith(("已在", "其中", "公司及其", "公司实际")):
+        return True
+    if len(normalized) <= 2:
+        return True
+    if not any(marker in normalized for marker in PENDING_TOPIC_INTEREST_MARKERS):
+        return True
+    return False
+
+
+def is_noisy_pending_field(title):
+    normalized = normalize_pending_title(title)
+    if len(normalized) < 4 or len(normalized) > 18:
+        return True
+    if normalized.startswith(("本集团", "本公司")):
+        return True
+    if normalized.startswith(("如", "其中", "截至", "截止")):
+        return True
+    if re.fullmatch(r"20\d{2} 年(?: \d{1,2} 月(?: \d{1,2} 日)?)?", normalized):
+        return True
+    if normalized.endswith(("有限公司", "股份有限公司")):
+        return True
+    if any(marker in normalized for marker in PENDING_FIELD_NOISE_MARKERS):
+        return True
+    if any(marker in normalized for marker in ("，", "。", "；", "：", ":", "…", "...", "/", "、")):
+        return True
+    return False
+
+
 def build_pending_updates(chapter_records):
     items = []
     seen_titles = set()
 
     for record in chapter_records:
-        for topic in record["extensions"]["dynamic_topics"]:
-            if topic in seen_titles:
-                continue
-            seen_titles.add(topic)
-            items.append({
-                "type": "topic_candidate",
-                "title": topic,
-                "proposal": f"将章节主题“{topic}”作为开放主题标签候选，等待更多案例验证。",
-                "source": f"chapter_{record['chapter_no']}",
-                "evidence": record["evidence"][:2],
-                "applicable_scope": report_scope_hint(record["attributes"]["topic_tags"]),
-                "status": "candidate",
-                "introduced_in": ENGINE_VERSION,
-                "confidence": "medium",
-            })
-
-        for item in record["numeric_data"][:2]:
-            label = item["label"]
-            if len(label) < 4 or label in seen_titles:
-                continue
-            seen_titles.add(label)
-            items.append({
-                "type": "field_candidate",
-                "title": label,
-                "proposal": f"新增可选扩展字段“{label}”，保留为案例级扩展载荷。",
-                "source": f"chapter_{record['chapter_no']}",
-                "evidence": [{"source": record["chapter_title"], "type": "numeric_data", "content": item["evidence"]}],
-                "applicable_scope": report_scope_hint(record["attributes"]["topic_tags"]),
-                "status": "candidate",
-                "introduced_in": ENGINE_VERSION,
-                "confidence": "low",
-            })
-
         for anomaly in record["anomalies"]:
-            if anomaly["signal_name"] in seen_titles:
+            normalized_title = normalize_pending_title(anomaly["signal_name"])
+            if normalized_title in seen_titles:
                 continue
-            seen_titles.add(anomaly["signal_name"])
+            seen_titles.add(normalized_title)
             items.append({
                 "type": "rule_candidate",
-                "title": anomaly["signal_name"],
-                "proposal": f"补充“{anomaly['signal_name']}”识别规则，并明确证据模式与适用范围。",
+                "title": normalized_title,
+                "proposal": f"补充“{normalized_title}”识别规则，并明确证据模式与适用范围。",
                 "source": f"chapter_{record['chapter_no']}",
                 "evidence": [{"source": record["chapter_title"], "type": "risk_signal", "content": line} for line in anomaly["evidence"]],
                 "applicable_scope": report_scope_hint(record["attributes"]["topic_tags"]),
@@ -1747,7 +1856,26 @@ def build_pending_updates(chapter_records):
                 "introduced_in": ENGINE_VERSION,
                 "confidence": anomaly["severity"],
             })
+        if len(items) >= 12:
+            break
 
+    for record in chapter_records:
+        for topic in record["extensions"]["dynamic_topics"]:
+            normalized_title = normalize_pending_title(topic)
+            if normalized_title in seen_titles or is_generic_pending_topic(normalized_title):
+                continue
+            seen_titles.add(normalized_title)
+            items.append({
+                "type": "topic_candidate",
+                "title": normalized_title,
+                "proposal": f"将章节主题“{normalized_title}”作为开放主题标签候选，等待更多案例验证。",
+                "source": f"chapter_{record['chapter_no']}",
+                "evidence": record["evidence"][:2],
+                "applicable_scope": report_scope_hint(record["attributes"]["topic_tags"]),
+                "status": "candidate",
+                "introduced_in": ENGINE_VERSION,
+                "confidence": "medium",
+            })
         if len(items) >= 12:
             break
 
@@ -1768,17 +1896,21 @@ def build_pending_updates(chapter_records):
     }
 
 
-def build_report_markdown(report_context, focus_list, final_data, pending_updates, chapter_records):
+def build_report_scaffold_markdown(report_context, focus_list, final_data, chapter_records):
     lines = [
-        f"# {report_context['company_name']} {report_context['report_period']} 年报分析报告",
+        f"# {report_context['company_name']} {report_context['report_period']} 年报分析报告（Scaffold）",
+        "",
+        "> 该文件由模板脚本自动生成，仅作为 Codex 后续逐章复核与正式成稿的起点。",
         "",
         "## 运行概览",
         f"- 报告类型：{report_context['report_type']}",
         f"- 审计意见：{report_context['audit_opinion']}",
         f"- 币种：{report_context['currency']}",
         f"- 附注章节记录数：{len(chapter_records)}",
+        "- 当前状态：`script_output_mode=scaffold_only`",
+        "- 下一步：Codex 需要复核附注边界、逐章阅读并输出正式结论。",
         "",
-        "## 动态重点",
+        "## 脚本初步重点",
     ]
 
     for focus in focus_list:
@@ -1788,7 +1920,7 @@ def build_report_markdown(report_context, focus_list, final_data, pending_update
 
     lines.extend([
         "",
-        "## 关键结论",
+        "## 脚本初步结论",
     ])
 
     for conclusion in final_data["key_conclusions"]:
@@ -1806,11 +1938,12 @@ def build_report_markdown(report_context, focus_list, final_data, pending_update
 
     lines.extend([
         "",
-        "## 待固化更新",
+        "## Codex 复核清单",
+        "- 复核 `notes_workfile` 的起止边界是否可信。",
+        "- 逐章确认 `chapter_records` 是否有错切、漏切或标题误判。",
+        "- 逐章提炼证据、结论与知识增量，再写入正式知识库。",
+        "- 完成正式 `analysis_report.md`、`final_data.json`、`soul_export_payload.json` 与 `financial_output.xlsx`。",
     ])
-
-    for item in pending_updates["items"][:10]:
-        lines.append(f"- `{item['type']}` / `{item['title']}`：{item['proposal']}")
 
     lines.append("")
     return "\n".join(lines)
@@ -1820,21 +1953,25 @@ def build_artifact_paths(run_dir):
     return {
         "run_manifest": str(run_dir / "run_manifest.json"),
         "chapter_records": str(run_dir / "chapter_records.jsonl"),
-        "focus_list": str(run_dir / "focus_list.json"),
+        "analysis_report_scaffold": str(run_dir / "analysis_report_scaffold.md"),
+        "focus_list_scaffold": str(run_dir / "focus_list_scaffold.json"),
+        "final_data_scaffold": str(run_dir / "final_data_scaffold.json"),
+        "soul_export_payload_scaffold": str(run_dir / "soul_export_payload_scaffold.json"),
+        "analysis_report": str(run_dir / "analysis_report.md"),
         "final_data": str(run_dir / "final_data.json"),
         "soul_export_payload": str(run_dir / "soul_export_payload.json"),
-        "pending_updates": str(run_dir / "pending_updates.json"),
-        "analysis_report": str(run_dir / "analysis_report.md"),
         "financial_output": str(run_dir / "financial_output.xlsx"),
     }
 
 
-def build_manifest(md_path, notes_work, run_dir, report_context, chapter_records, focus_list, pending_updates):
+def build_manifest(md_path, notes_work, run_dir, report_context, chapter_records, focus_list):
     return {
         "engine_version": ENGINE_VERSION,
         "status": "success",
         "failure_reason": "",
         "generated_at": datetime.datetime.now().isoformat(timespec="seconds"),
+        "script_output_mode": "scaffold_only",
+        "codex_review_required": True,
         "input": {
             "md_path": str(md_path),
             "md5": md5_file(md_path),
@@ -1861,8 +1998,7 @@ def build_manifest(md_path, notes_work, run_dir, report_context, chapter_records
         "artifacts": build_artifact_paths(run_dir),
         "counts": {
             "chapter_records": len(chapter_records),
-            "focus_items": len(focus_list),
-            "pending_updates": len(pending_updates["items"]),
+            "focus_items_scaffold": len(focus_list),
         },
     }
 
@@ -1881,6 +2017,8 @@ def build_failure_manifest(
         "status": "failed",
         "failure_reason": failure_reason,
         "generated_at": datetime.datetime.now().isoformat(timespec="seconds"),
+        "script_output_mode": "failed_before_scaffold",
+        "codex_review_required": False,
         "input": {
             "md_path": str(md_path),
             "md5": md5_file(md_path),
@@ -1949,8 +2087,6 @@ def main():
         raise FileNotFoundError(f"Markdown 文件不存在: {md_path}")
 
     run_dir = resolve_run_dir(args.run_dir)
-    stable_excel_path = run_dir / "financial_output.xlsx"
-
     print(f"[INFO] 输入文件: {md_path}")
     print(f"[INFO] 运行目录: {run_dir}")
 
@@ -1987,45 +2123,29 @@ def main():
         fail_with_manifest(md_path, args.notes_workfile, run_dir, report_context, "notes_catalog_empty", "notes_catalog 为空")
 
     focus_list = build_focus_list(chapter_records)
-    final_data = build_final_data(report_context, chapter_records, focus_list)
-    pending_updates = build_pending_updates(chapter_records)
-    soul_export_payload = build_soul_export_payload(
+    final_data_scaffold = build_final_data(report_context, chapter_records, focus_list)
+    soul_export_payload_scaffold = build_soul_export_payload(
         report_context,
         notes_work,
         run_dir,
-        final_data,
+        final_data_scaffold,
         focus_list,
         chapter_records,
     )
-    analysis_report = build_report_markdown(
+    analysis_report_scaffold = build_report_scaffold_markdown(
         report_context,
         focus_list,
-        final_data,
-        pending_updates,
+        final_data_scaffold,
         chapter_records,
     )
 
     write_jsonl(run_dir / "chapter_records.jsonl", chapter_records)
-    write_json(run_dir / "focus_list.json", focus_list)
-    write_json(run_dir / "final_data.json", final_data)
-    write_json(run_dir / "soul_export_payload.json", soul_export_payload)
-    write_json(run_dir / "pending_updates.json", pending_updates)
+    write_json(run_dir / "focus_list_scaffold.json", focus_list)
+    write_json(run_dir / "final_data_scaffold.json", final_data_scaffold)
+    write_json(run_dir / "soul_export_payload_scaffold.json", soul_export_payload_scaffold)
 
-    with open(run_dir / "analysis_report.md", "w", encoding="utf-8") as handle:
-        handle.write(analysis_report)
-
-    try:
-        export_payload_to_workbook(run_dir / "soul_export_payload.json", stable_excel_path)
-    except Exception as exc:
-        fail_with_manifest(
-            md_path,
-            args.notes_workfile,
-            run_dir,
-            report_context,
-            "soul_export_failed",
-            str(exc),
-            notes_work=notes_work,
-        )
+    with open(run_dir / "analysis_report_scaffold.md", "w", encoding="utf-8") as handle:
+        handle.write(analysis_report_scaffold)
 
     manifest = build_manifest(
         md_path,
@@ -2034,14 +2154,13 @@ def main():
         report_context,
         chapter_records,
         focus_list,
-        pending_updates,
     )
     write_json(run_dir / "run_manifest.json", manifest)
 
     print(f"[OK] 章节记录: {len(chapter_records)}")
-    print(f"[OK] 动态重点: {len(focus_list)}")
-    print(f"[OK] 待固化更新: {len(pending_updates['items'])}")
-    print(f"✅ 成功: 产物已生成 -> {run_dir}")
+    print(f"[OK] scaffold 初步重点: {len(focus_list)}")
+    print("[OK] script_output_mode: scaffold_only")
+    print(f"✅ 成功: 抽取与 scaffold 已生成 -> {run_dir}")
 
 
 if __name__ == "__main__":
