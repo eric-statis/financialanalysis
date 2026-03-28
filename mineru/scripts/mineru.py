@@ -29,7 +29,6 @@ def main():
     
     # 传递所有参数给主脚本
     from mineru_v2 import main as v2_main
-    from mineru_async import main as async_main
     from mineru_stable import main as stable_main
     
     # 根据调用方式选择主脚本
@@ -38,9 +37,6 @@ def main():
     if script_name == "mineru" or (len(sys.argv) > 1 and sys.argv[1] == "v2"):
         sys.argv[0] = str(SCRIPT_DIR / "mineru_v2.py")
         v2_main()
-    elif script_name == "mineru_async":
-        sys.argv[0] = str(SCRIPT_DIR / "mineru_async.py")
-        async_main()
     elif script_name == "mineru_stable":
         sys.argv[0] = str(SCRIPT_DIR / "mineru_stable.py")
         stable_main()

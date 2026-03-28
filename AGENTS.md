@@ -1,7 +1,7 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-根目录主要存放年报 PDF、分析产出 `.md/.xlsx`，以及两个辅助脚本：`run_mineru.py` 用于触发 PDF 转 Markdown，`generate_henglong_report.py` 用于生成示例 Excel 报告。核心分析逻辑位于 `financial-analyzer/`：`scripts/` 放主程序，`templates/` 放行业模板，`references/` 放产物契约与流程说明，`testdata/` 放手工测试输入，`test_runs/` 保存回归运行结果。
+根目录主要存放年报 PDF、分析产出 `.md/.xlsx`，以及辅助脚本 `run_mineru.py`。核心分析逻辑位于 `financial-analyzer/`：`scripts/` 放主程序，`templates/` 放行业模板，`references/` 放产物契约与流程说明，`testdata/` 放手工测试输入，`test_runs/` 保存回归运行结果。
 
 ## Planning & Canonical Docs
 本项目的整体性设计、阶段计划、workstream 拆解、跨对话协作约定，统一以根目录 `automation_blueprint.md` 为主入口和最高优先级项目文档。后续新对话或新 agent 开始工作时，如任务不是纯局部修复，应先阅读该文件，再阅读当前任务对应的专项文档。
@@ -35,7 +35,6 @@
 
 ```powershell
 py ".\run_mineru.py"
-py ".\generate_henglong_report.py"
 py ".\financial-analyzer\scripts\financial_analyzer.py" --md "C:\path\report.md" --notes-workfile "C:\path\notes_workfile.json" --run-dir "C:\path\run_dir"
 ```
 
