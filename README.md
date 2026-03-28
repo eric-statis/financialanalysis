@@ -102,6 +102,7 @@
 - 入口：`mineru/`
 - 重点：处理 PDF、Word、PPT、图片等文档。
 - 适用场景：年报解析、附注定位、图片或扫描件 OCR。
+- 配置模板：先复制 `mineru/config.example.json` 为 `mineru/config.json`，再填写自己的 `MINERU_TOKEN`。
 
 ## 主要产物
 

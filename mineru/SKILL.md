@@ -1,7 +1,6 @@
 ---
 name: mineru
 description: "Parse PDFs, Word docs, PPTs, and images into clean Markdown using MinerU's VLM engine. Use when: (1) Converting PDF/Word/PPT/image to Markdown, (2) Extracting text/tables/formulas from documents, (3) Batch processing multiple files, (4) Saving parsed content to Obsidian or knowledge bases. Supports LaTeX formulas, tables, images, multilingual OCR, and async parallel processing."
-homepage: https://mineru.net
 metadata:
   openclaw:
     emoji: "📄"
@@ -24,7 +23,7 @@ Convert PDF, Word, PPT, and images to clean Markdown using MinerU's VLM engine �
 ## Setup
 
 1. Get free API token at https://mineru.net/user-center/api-token
-2. API Token 已配置在 `config.json` 文件中（首次使用请编辑更新）
+2. 首次使用请将 `config.example.json` 复制为 `config.json`，然后填写自己的 API Token
 
 **Limits:** 2000 pages/day · 200 MB per file · 600 pages per file
 
