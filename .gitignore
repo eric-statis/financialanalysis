@@ -4,3 +4,11 @@ financial-analyzer/scripts/__pycache__/
 .DS_Store
 cases/
 mineru/config.json
+*.pdf
+*.PDF
+*.pdf.tmp
+*.PDF.tmp
+chinamoney/scripts/.playwright-cli/
+chinamoney/scripts/__pycache__/
+chinamoney/scripts/.playwright-cli/*
+tmp/
