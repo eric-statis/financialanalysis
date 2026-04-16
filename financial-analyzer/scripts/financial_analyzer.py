@@ -763,6 +763,41 @@ def build_final_data(report_context, chapter_records, focus_list):
     }
 
 
+def infer_industry_tag(chapter_records):
+    """基于章节主题标签推断行业标签（占位实现）。"""
+    if not chapter_records:
+        return ""
+    tag_counts = {}
+    for record in chapter_records:
+        for tag in record.get("topic_tags", []):
+            tag_counts[tag] = tag_counts.get(tag, 0) + 1
+    if not tag_counts:
+        return ""
+    sorted_tags = sorted(tag_counts.items(), key=lambda x: x[1], reverse=True)
+    top_tag = sorted_tags[0][0]
+    industry_map = {
+        "property": "property",
+        "investment_property": "property",
+        "lgfv_features": "lgfv",
+        "energy": "energy",
+        "infrastructure": "infrastructure",
+    }
+    return industry_map.get(top_tag, "")
+
+
+def make_manifest_item(code, module_key, module_type, is_required, is_enabled, title, description):
+    return {
+        "module_code": code,
+        "module_key": module_key,
+        "module_type": module_type,
+        "required": is_required,
+        "enabled": is_enabled,
+        "title": title,
+        "description": description,
+        "sheet_name": title,
+    }
+
+
 def build_soul_export_payload(report_context, notes_work, run_dir, chapter_records):
     period = report_context["report_period"]
     period_end = f"{period}-12-31" if period else ""
